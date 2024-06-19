@@ -1,6 +1,5 @@
 {
   "name": "@ldrender/gradient-picker",
-  "private": false,
   "version": "1.0.0",
   "description": "A gradient picker component",
   "type": "module",
@@ -41,7 +40,7 @@
 
   "scripts": {
     "dev": "vite",
-    "build": "tsc src/index.ts --target esnext --outfile dist/index.js --module amd && vite build",
+    "build": "tsc src/index.ts --target esnext --outfile dist/gradient-picker.js --module amd && ",
     "preview": "vite preview"
   },
   "devDependencies": {

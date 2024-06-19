@@ -33,8 +33,8 @@ export class GradientPicker {
         this.colorHandlersEl = createGradientElement(this.containerPicker, 'gradient-picker__colors')
         this.typeInput = createGradientSelect(this.optionsEl, ["linear", "radial"], 'gradient-picker__select')
         this.directionInput = createGradientSelect(this.optionsEl, ["top", "left", "center", "bottom", "right"], 'gradient-picker__select')
-        this.addColorStop("#3494E6", .5) 
-        this.addColorStop("#EC6EAD", 99)
+        this.addColorStop("#af68fe", 9.3) 
+        this.addColorStop("#65dfff", 75.1)
 
         this.listener()
     }
@@ -79,10 +79,10 @@ export class GradientPicker {
         this.previewEl.style.backgroundImage = this.getGradientString('linear', 'right')
         
         // ! Update the background of the app (Only for demo purposes)
-        // const gradientString = this.getGradientString()
-        // document.getElementById('app')!.style.backgroundImage = gradientString
-        // let cssTextbox = document.getElementById('css')!
-        // cssTextbox.textContent = gradientString
+         const gradientString = this.getGradientString()
+         document.getElementById('app')!.style.backgroundImage = gradientString
+         let cssTextbox = document.getElementById('css')!
+         cssTextbox.textContent = gradientString
     }
 
     private createStopHandler(stopIndex: number) {
