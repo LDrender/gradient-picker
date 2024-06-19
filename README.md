@@ -3,4 +3,4 @@
 
 <p align="center">A website that allows you to create your own gradient</p>
 
-![image](https://github.com/LDrender/gradient-picker/blob/master/gradient-picker.png)
+![image](https://github.com/LDrender/gradient-picker/blob/master/gradient-picker-exemple.png)
