@@ -1,3 +1,1 @@
-import { GradientPicker } from "./gradient";
-
-export { GradientPicker };
+export { type GradientPicker } from './gradient'

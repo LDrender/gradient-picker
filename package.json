@@ -1,12 +1,46 @@
 {
-  "name": "gradient-picker",
-  "private": true,
-  "version": "0.0.0",
+  "name": "@ldrender/gradient-picker",
+  "version": "1.0.0",
+  "description": "A gradient picker component",
   "type": "module",
+  "main": "dist/gradient-picker.js",
+  "module": "dist/gradient-picker.js",
+  "types": "dist/gradient-picker.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/gradient-picker.js",
+      "require": "./dist/gradient-picker.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "gradient",
+    "picker",
+    "color",
+    "ui",
+    "component",
+    "web",
+    "js",
+    "typescript"
+  ],
+  "author": "LDRender",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LDrender/gradient-picker.git",
+    "directory": "packages/gradient-picker"
+  },
+  "bugs": {
+    "url": "https://github.com/LDrender/gradient-picker/issues"
+  },
+  "homepage": "https://github.com/LDrender/gradient-picker#readme",
+  
+
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
-    "export": "tsc src/index.ts --outFile dist/index.js && vite build --base ./dist/ --outDir ./dist/",
+    "build": "tsc src/index.ts --target esnext --outfile dist/index.js --module amd && vite build",
     "preview": "vite preview"
   },
   "devDependencies": {

@@ -1,4 +1,6 @@
 import { createElement, createGradientElement, createGradientSelect } from "./utils"
+import './picker.scss'
+
 interface Props {
     el: HTMLElement
 }

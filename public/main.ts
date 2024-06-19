@@ -1,4 +1,4 @@
-import { GradientPicker } from './gradient'
+import { GradientPicker } from '../src/gradient'
 import './style.css'
 import './picker.scss'
 
