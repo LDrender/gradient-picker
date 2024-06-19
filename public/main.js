@@ -1,9 +1,6 @@
-import { GradientPicker } from './gradient'
-import './style.css'
-import './picker.scss'
+import { GradientPicker } from '../dist/gradient-picker.js'
 
-
-const el = document.getElementById('card-app')!
+const el = document.getElementById('card-app')
 
 // TODO: publish UI library
 new GradientPicker({
@@ -12,7 +9,7 @@ new GradientPicker({
 
 const copyCssButton = document.getElementById('copy-css')
 copyCssButton?.addEventListener('click', () => {
-  let textarea = document.querySelector("#css") as HTMLTextAreaElement;
+  let textarea = document.querySelector("#css");
   navigator.clipboard.writeText(textarea.value);
   
   // Show "Copied!" text

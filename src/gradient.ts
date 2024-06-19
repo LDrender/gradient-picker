@@ -1,16 +1,5 @@
 import { createElement, createGradientElement, createGradientSelect } from "./utils"
 
-interface Props {
-    el: HTMLElement
-}
-
-type GradientDirection = "top" | "left" | "center" | "bottom" | "right"
-type GradientType = "linear" | "radial"
-type GradientStop = {
-    color: string 
-    position: number
-}
-
 export class GradientPicker {
     el: Props['el']
     containerPicker: HTMLElement
@@ -211,4 +200,15 @@ export class GradientPicker {
             this.updateElementBackground()
         })
     }
+}
+
+interface Props {
+    el: HTMLElement
+}
+
+type GradientDirection = "top" | "left" | "center" | "bottom" | "right"
+type GradientType = "linear" | "radial"
+type GradientStop = {
+    color: string 
+    position: number
 }
