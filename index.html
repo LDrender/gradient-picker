@@ -9,37 +9,27 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Noto+Sans+Tangsa&display=swap" rel="stylesheet"> 
+    <style lang="sass"></style>
   </head>
   <body class="center-both">
     <div id="app" class="center-both">
       <div class="container">
         <h1 class="title">GradientPicker</h1>
-        <div class="card">
-          <div class="color-preview" id="preview"></div>
+        <div style="display: flex; gap: 40px;">
+          <div id="card-app" class="card">
 
-          <div class="options">
-            <select name="type" id="type">
-              <option value="linear" selected>Linear</option>
-              <option value="radial">Radial</option>
-            </select>
-            <select name="direction" id="direction">
-              <option value="right" selected>Right</option>
-              <option value="top">Top</option>
-              <option value="left">Left</option>
-              <option value="center">Center</option>
-              <option value="bottom">Bottom</option>
-            </select>
           </div>
-
-          <div class="css-box">
-            <div class="css-box__header">
-              <h5>CSS Value</h5>
-              <div class="copy-button">
-                <span id="copied">Copied!</span>
-                <button id="copy-css">Copy</button>
+          <div class="card">
+            <div class="css-box">
+              <div class="css-box__header">
+                <h5>CSS Value</h5>
+                <div class="copy-button">
+                  <span id="copied">Copied!</span>
+                  <button id="copy-css">Copy</button>
+                </div>
               </div>
+              <textarea name="css" id="css" readonly></textarea>
             </div>
-            <textarea name="css" id="css" readonly></textarea>
           </div>
         </div>
         <a href="https://github.com/zuramai/gradient-picker" target="_blank">

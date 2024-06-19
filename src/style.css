@@ -41,7 +41,7 @@ body {
 }
 
 .container {
-  width: min(500px, 100%);
+  width: min(1000px, 100%);
 }
 
 h1 {
@@ -73,112 +73,21 @@ a:hover {
 
 .card {
   background-color: white;
-  padding: 2rem 1rem 1rem;
+  padding: 1rem;
   border-radius: 1rem;
+  width: 50%;
 }
 
-.color-preview {
-  height: 3rem;
-  border: 1px solid rgb(188, 188, 188);
-  border-radius: 50rem;
-  box-shadow: 1px 1px 3px rgb(140, 138, 138);
-  cursor: crosshair;
-  position: relative;
-}
-.color__handlers {
-  height: 100%;
-  border-radius: 50rem;
-  overflow: hidden;
-  position: relative;
-  z-index: 3;
-}
-.color__handler {
-  height: 100%;
-  position: absolute;
-  left: var(--handler-position);
-  width: 5px;
-  transform: translateX(-2.5px);
-  background-color: rgba(31, 30, 30, 0.623);
-}
-
-.color__handler:hover {
-  cursor: col-resize;
-}
-
-.color__handler-remover {
-  width: 1.2rem;
-  border: 1px solid #555;
-  height: 1.2rem;
-  cursor: pointer;
-  background-color: white;
-  box-shadow: 1px 1px 2px #ccc;;
-  border-radius: 50%;
-  position: absolute;
-  top: -1.5rem;
-  left: var(--handler-position);
-  transform: translateX(-50%)
-}
-.color__handler-remover:after {
-  content: 'x';
-  color: #555;
-  position: absolute;
-  left: 4px;
-  top: -5px;
-}
-.color__handler-remover:before {
-  content: '';
-  top: 100%;
-  /* background-color: rgb(72, 72, 72); */
-  position: absolute;
-  width: 1px;
-  height: 20px;
-  z-index: 1;
-}
-.color__handler-remover:hover {
-  border-color: rgb(229, 64, 64);
-}
-.color__handler-remover:hover:after {
-  color: rgb(229, 64, 64);
-}
-.color__input {
-  border: none;
-  border-radius: 50%;
-  transform: translate(-2px,-2px);
-}
-.color__input-wrapper {
-  width: 1.3rem;
-  height: 1.3rem;
-  border: 1px solid white;
-  border-radius: 50%;
-  overflow: hidden;
-  border: .1rem solid white;
-  outline: 1px solid #bbb;
-  position: absolute;
-  left: var(--handler-position);
-  cursor: pointer;
-  top: 110%;
-  transform: translateX(-50%);
-}
-.options {
-  display: flex;
-  gap: 1rem;
-}
-select, textarea {
+textarea {
   padding: .5rem;
-  width: 100%
-}
-select {
-  background-color: white;
-  border: 1px solid #928b8b;
-  border-radius: .5rem;
-  margin-top: 2rem;
+  width: 100%;
+  height: 150px;
 }
 .css-box__header {
   border: 1px solid #928b8b;
   display: flex;
   justify-content: space-between;
   padding: .5rem;
-  margin-top: 1rem;;
   border-top-left-radius: .5rem;
   border-top-right-radius: .5rem;
 }

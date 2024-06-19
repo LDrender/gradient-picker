@@ -1,16 +1,13 @@
 import { GradientPicker } from './gradient'
 import './style.css'
+import './picker.scss'
 
-const app = document.getElementById('app')!
-const preview = document.getElementById('preview')!
-const colorHandlers = document.createElement('div')
-colorHandlers.classList.add('color__handlers')
+
+const el = document.getElementById('card-app')!
 
 // TODO: publish UI library
 new GradientPicker({
-  el: app,
-  previewEl: preview,
-  colorHandlersEl: colorHandlers,
+  el: el
 })
 
 const copyCssButton = document.getElementById('copy-css')

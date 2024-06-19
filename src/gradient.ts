@@ -1,9 +1,6 @@
-import { createElement } from "./utils"
-
+import { createElement, createGradientElement, createGradientSelect } from "./utils"
 interface Props {
     el: HTMLElement
-    previewEl: HTMLElement
-    colorHandlersEl: HTMLElement
 }
 
 type GradientDirection = "top" | "left" | "center" | "bottom" | "right"
@@ -14,19 +11,26 @@ type GradientStop = {
 }
 
 export class GradientPicker {
-    direction: GradientDirection = "right"
     el: Props['el']
-    previewEl: Props['previewEl']
-    colorHandlersEl: Props['colorHandlersEl']
+    containerPicker: HTMLElement
+    optionsEl: HTMLElement
+    direction: GradientDirection = "right"
+    directionInput: HTMLSelectElement | null
+    previewEl: HTMLElement
+    colorHandlersEl: HTMLElement
     type: GradientType = "linear"
+    typeInput: HTMLSelectElement | null
     stops: GradientStop[] = []
     isDragging = false
 
-    constructor({ el, previewEl, colorHandlersEl }: Props) {
+    constructor({el}: Props) {
         this.el = el
-        this.previewEl = previewEl
-        this.colorHandlersEl = colorHandlersEl
-        this.previewEl.append(this.colorHandlersEl)
+        this.containerPicker = createGradientElement(this.el, 'gradient-picker')
+        this.optionsEl = createGradientElement(this.containerPicker, 'gradient-picker__options')
+        this.previewEl = createGradientElement(this.containerPicker, 'gradient-picker__preview')
+        this.colorHandlersEl = createGradientElement(this.containerPicker, 'gradient-picker__colors')
+        this.typeInput = createGradientSelect(this.optionsEl, ["linear", "radial"], 'gradient-picker__select')
+        this.directionInput = createGradientSelect(this.optionsEl, ["top", "left", "center", "bottom", "right"], 'gradient-picker__select')
         this.addColorStop("#3494E6", .5) 
         this.addColorStop("#EC6EAD", 99)
 
@@ -70,36 +74,53 @@ export class GradientPicker {
     }
 
     private updateElementBackground() {
-        const gradientString = this.getGradientString()
-        this.el.style.backgroundImage = gradientString
         this.previewEl.style.backgroundImage = this.getGradientString('linear', 'right')
-        let cssTextbox = document.getElementById('css')!
-        cssTextbox.textContent = gradientString
+        
+        // ! Update the background of the app (Only for demo purposes)
+        // const gradientString = this.getGradientString()
+        // document.getElementById('app')!.style.backgroundImage = gradientString
+        // let cssTextbox = document.getElementById('css')!
+        // cssTextbox.textContent = gradientString
     }
 
     private createStopHandler(stopIndex: number) {
         const colorStop = this.stops[stopIndex]
+        const stopPositionCeil = Math.ceil(colorStop.position)
 
         // Handler bar
-        const handler = createElement('div', { class: 'color__handler', 'data-index': stopIndex.toString() }, { '--handler-position': `${colorStop.position}%` })
+        const handler = createElement('div', { class: 'gradient-picker__preview-handler', 'data-index': stopIndex.toString() }, { '--handler-position': `${colorStop.position}%`, '--handler-color': colorStop.color })
 
         // Handler remover
-        const handlerButtons = createElement('div', { class: 'color__handler-buttons', 'data-index': stopIndex.toString() }, { '--handler-position': `${colorStop.position}%` })
-        const handlerRemover = createElement('div', { class: 'color__handler-remover' })
+        const handlerButtons = createElement('div', { class: 'gradient-picker__colors-variation', 'data-index': stopIndex.toString() }, { '--color-order': stopPositionCeil.toString() })
+        const handlerRemover = createElement('div', { class: 'gradient-picker__colors-remover' })
 
         // Color picker
         const inputColorWrapper = createElement('div', {
-            type: 'color',
-            class: 'color__input-wrapper',
+            class: 'gradient-picker__colors-picker',
         })
-        const inputColor = createElement('input', {
+        const inputColorPicker = createElement('input', {
             type: 'color',
-            class: 'color__input',
+            class: 'gradient-picker__colors-picker-input',
+            'data-index-color': stopIndex.toString(),
             value: colorStop.color
+        },
+        {
+            '--color-value': colorStop.color
         })
-        inputColorWrapper.append(inputColor)
+        const inputColorText = createElement('input', {
+            type: 'text',
+            class: 'gradient-picker__colors-picker-input',
+            'data-index-color': stopIndex.toString(),
+            value: colorStop.color
+        },
+        {
+            '--color-value': colorStop.color
+        })
+        inputColorWrapper.append(inputColorPicker)
+        inputColorWrapper.append(inputColorText)
         
-        inputColor.addEventListener('input', e => this.onColorChange(e as InputEvent, stopIndex))
+        inputColorPicker.addEventListener('input', e => this.onColorChange(e as InputEvent, stopIndex))
+        inputColorText.addEventListener('input', e => this.onColorChange(e as InputEvent, stopIndex))
         handler.addEventListener('mousedown', e => this.onHandlerMouseDown(e))
         handler.addEventListener('mouseup', e => this.onHandlerMouseUp(e))
         this.previewEl.addEventListener('mousemove', e => this.onHandlerMouseMove(e))
@@ -110,9 +131,9 @@ export class GradientPicker {
             this.updateElementBackground()
         })
 
-        handlerButtons.append(handlerRemover, inputColorWrapper)
-        this.colorHandlersEl.append(handler)
-        this.previewEl.append(handlerButtons)
+        handlerButtons.append(inputColorWrapper, handlerRemover)
+        this.previewEl.append(handler)
+        this.colorHandlersEl.append(handlerButtons)
     }
 
     onHandlerMouseDown(event: MouseEvent) {
@@ -124,7 +145,7 @@ export class GradientPicker {
     onHandlerMouseMove(event: MouseEvent) {
         if(!this.isDragging) return
 
-        let handlerEl = document.querySelector('.color__handler.active')
+        let handlerEl = document.querySelector('.gradient-picker__preview-handler.active')
         if(!handlerEl?.classList.contains('active')) return 
         const stopIndex = ~~(handlerEl.getAttribute('data-index') || 0)
 
@@ -144,11 +165,15 @@ export class GradientPicker {
 
     changeColor(stopIndex: number, color: string) {
         this.stops[stopIndex].color = color
+        this.colorHandlersEl.querySelectorAll(`input[data-index-color='${stopIndex}']`).forEach((el) => (el as HTMLInputElement).value = color)
+        this.previewEl.querySelectorAll(`div.gradient-picker__preview-handler[data-index='${stopIndex}']`).forEach((el) => (el as HTMLElement).style.setProperty('--handler-color', color))
     }
 
     changePosition(stopIndex: number, position: number) {
         this.stops[stopIndex].position = position
-        this.previewEl.querySelectorAll(`div[data-index='${stopIndex}']`).forEach((el) => (el as HTMLElement).style.setProperty('--handler-position', position+'%'))
+        const stopPositionCeil = Math.ceil(position)
+        this.previewEl.querySelectorAll(`div.gradient-picker__preview-handler[data-index='${stopIndex}']`).forEach((el) => (el as HTMLElement).style.setProperty('--handler-position', position+'%'))
+        this.colorHandlersEl.querySelectorAll(`div.gradient-picker__colors-variation[data-index='${stopIndex}']`).forEach((el) => (el as HTMLElement).style.setProperty('--color-order', stopPositionCeil.toString()))
     }
 
     onColorChange(event: InputEvent, index: number) {
@@ -167,22 +192,20 @@ export class GradientPicker {
 
     listener() {
         this.previewEl.addEventListener('click', e => {
-            if((e.target as HTMLElement).classList.contains('color__handler') || this.isDragging) return
-            if(!this.colorHandlersEl.contains(e.target as HTMLElement)) return
+            if((e.target as HTMLElement).classList.contains('gradient-picker__preview-handler') || this.isDragging) return
+            if(!this.previewEl.contains(e.target as HTMLElement)) return
 
             const newStopPosition = this.getPercentage(e.clientX)
 
             this.addColorStop("#333333", newStopPosition)
         })
-        const directionInput = document.getElementById('direction') as HTMLInputElement
-        const typeInput = document.getElementById('type') as HTMLInputElement
 
-        directionInput?.addEventListener('input', () => {
-            this.direction = directionInput.value as GradientDirection
+        this.directionInput?.addEventListener('input', () => {
+            this.direction = this.directionInput?.value as GradientDirection
             this.updateElementBackground()
         })
-        typeInput?.addEventListener('input', () => {
-            this.type = typeInput.value as GradientType
+        this.typeInput?.addEventListener('input', () => {
+            this.type = this.typeInput?.value as GradientType
             
             this.updateElementBackground()
         })
