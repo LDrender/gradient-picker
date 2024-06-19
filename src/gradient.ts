@@ -67,10 +67,10 @@ export class GradientPicker {
         this.previewEl.style.backgroundImage = this.getGradientString('linear', 'right')
         
         // ! Update the background of the app (Only for demo purposes)
-         const gradientString = this.getGradientString()
-         document.getElementById('app')!.style.backgroundImage = gradientString
-         let cssTextbox = document.getElementById('css')!
-         cssTextbox.textContent = gradientString
+        // const gradientString = this.getGradientString()
+        // document.getElementById('app')!.style.backgroundImage = gradientString
+        // let cssTextbox = document.getElementById('css')!
+        // cssTextbox.textContent = gradientString
     }
 
     private createStopHandler(stopIndex: number) {

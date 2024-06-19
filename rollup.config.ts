@@ -1,7 +1,9 @@
-import { RollupOptions } from "rollup";
 import commonjs from "@rollup/plugin-commonjs";
+import { nodeResolve } from "@rollup/plugin-node-resolve";
+import terser from "@rollup/plugin-terser";
+import { RollupOptions } from "rollup";
+import { minifyTemplateLiterals } from "rollup-plugin-minify-template-literals";
 import typescript from "rollup-plugin-typescript2";
-import minifyTemplateLiterals from "rollup-plugin-minify-template-literals";
 
 const common = () => [
     typescript(),
@@ -13,15 +15,21 @@ const common = () => [
     })
 ];
 
+const bundle = () => [
+    nodeResolve(),
+    terser()
+  ];
+
 const config: RollupOptions[] = [
     {
         input: "src/gradient.ts",
         output: {
             file: "dist/gradient-picker.js",
+            sourcemap: true,
             format: "esm",
             name: "GradientPicker"
         },
-        plugins: common()
+        plugins: [...common(), ...bundle()]
     }
 ];
 
