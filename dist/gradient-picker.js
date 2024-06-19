@@ -37,7 +37,7 @@ define("utils", ["require", "exports"], function (require, exports) {
     }
     exports.createGradientSelect = createGradientSelect;
 });
-define("gradient", ["require", "exports", "utils", "./picker.scss"], function (require, exports, utils_1) {
+define("gradient", ["require", "exports", "utils"], function (require, exports, utils_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.GradientPicker = void 0;
@@ -61,8 +61,8 @@ define("gradient", ["require", "exports", "utils", "./picker.scss"], function (r
             this.colorHandlersEl = (0, utils_1.createGradientElement)(this.containerPicker, 'gradient-picker__colors');
             this.typeInput = (0, utils_1.createGradientSelect)(this.optionsEl, ["linear", "radial"], 'gradient-picker__select');
             this.directionInput = (0, utils_1.createGradientSelect)(this.optionsEl, ["top", "left", "center", "bottom", "right"], 'gradient-picker__select');
-            this.addColorStop("#3494E6", .5);
-            this.addColorStop("#EC6EAD", 99);
+            this.addColorStop("#af68fe", 9.3);
+            this.addColorStop("#65dfff", 75.1);
             this.listener();
         }
         /**
@@ -99,10 +99,10 @@ define("gradient", ["require", "exports", "utils", "./picker.scss"], function (r
         updateElementBackground() {
             this.previewEl.style.backgroundImage = this.getGradientString('linear', 'right');
             // ! Update the background of the app (Only for demo purposes)
-            // const gradientString = this.getGradientString()
-            // document.getElementById('app')!.style.backgroundImage = gradientString
-            // let cssTextbox = document.getElementById('css')!
-            // cssTextbox.textContent = gradientString
+            const gradientString = this.getGradientString();
+            document.getElementById('app').style.backgroundImage = gradientString;
+            let cssTextbox = document.getElementById('css');
+            cssTextbox.textContent = gradientString;
         }
         createStopHandler(stopIndex) {
             const colorStop = this.stops[stopIndex];
