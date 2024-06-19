@@ -1,6 +1,6 @@
 {
   "name": "@ldrender/gradient-picker",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "description": "A gradient picker component",
   "type": "module",
   "main": "dist/gradient-picker.js",
