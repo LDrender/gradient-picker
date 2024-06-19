@@ -1,5 +1,6 @@
 {
   "name": "@ldrender/gradient-picker",
+  "private": false,
   "version": "1.0.0",
   "description": "A gradient picker component",
   "type": "module",
