@@ -19,10 +19,13 @@ import '@ldrender/gradient-picker/dist/gradient-picker.css';
 
 const gradientPicker = new GradientPicker({
   el: document.querySelector('#gradient-picker'),
-  onChange: (gradient) => {
-    console.log(gradient);
-  }
-});
+  stops: [
+    { color: '#ff0000', position: 0 },
+    { color: '#00ff00', position: 50 },
+    { color: '#0000ff', position: 100 },
+  ],
+  directionType: "percent",
+})
 ```
 
 ## API Documentation

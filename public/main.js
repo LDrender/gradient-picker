@@ -6,6 +6,11 @@ const el = document.getElementById('card-app')
 // TODO: publish UI library
 new GradientPicker({
   el: el,
+  stops: [
+    { color: '#ff0000', position: 0 },
+    { color: '#00ff00', position: 50 },
+    { color: '#0000ff', position: 100 },
+  ],
   directionType: "percent",
 })
 
