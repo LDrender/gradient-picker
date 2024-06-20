@@ -1,10 +1,12 @@
-import { GradientPicker } from '../dist/gradient-picker.js'
+import { GradientPicker } from '../src/gradient.ts'
+import '../src/gradient-picker.scss'
 
 const el = document.getElementById('card-app')
 
 // TODO: publish UI library
 new GradientPicker({
-  el: el
+  el: el,
+  directionType: "percent",
 })
 
 const copyCssButton = document.getElementById('copy-css')

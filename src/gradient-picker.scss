@@ -105,6 +105,19 @@
                 }
             }
         }
+
+        &-position {
+            input {
+                margin: 0;
+                border: unset;
+                box-shadow: var(--gradient-picker-box-shadow);
+                text-transform: capitalize;
+                background-color: white;
+                border-radius: .5rem;
+                padding: .5rem;
+                width: 100%;
+            }
+        }
     }
 
     &__options {
@@ -112,6 +125,7 @@
         gap: 1rem;
     }
 
+    &__input,
     &__select {
         margin: 0;
         border: unset;
@@ -121,5 +135,9 @@
         border-radius: .5rem;
         padding: .5rem;
         width: 100%
+    }
+
+    &__input {
+        width: 30%;
     }
 }
