@@ -146,7 +146,7 @@ export class GradientPicker {
             type: 'number',
             class: 'gradient-picker__colors-position-input',
             'data-index-position': stopIndex.toString(),
-            value: colorStop.position.toString()
+            value: stopPositionCeil.toString()
         })
         positionWrapper.append(positionInput)
         
