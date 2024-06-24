@@ -117,7 +117,8 @@ export class GradientPicker {
     }
 
     public getStops() {
-        return this.stops
+        const colorStops = [...this.stops].sort((a,b) => a.offset - b.offset)
+        return colorStops.map(({color, offset}) => ({ color, offset }))
     }
 
     private updateElementBackground() {
