@@ -11,7 +11,17 @@
   npm install @ldrender/gradient-picker
 ```
 
-## Usage
+### Development or Build
+
+```bash
+  npm run dev
+```
+  
+```bash
+  npm run build
+```
+
+### Usage
 
 ```javascript
 import GradientPicker from '@ldrender/gradient-picker';
