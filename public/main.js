@@ -1,25 +1,23 @@
 import { GradientPicker } from '../src/gradient.ts'
 import '../src/gradient-picker.scss'
 
-const el = document.getElementById('card-app')
-const el2 = document.getElementById('card-app-2')
-
 // TODO: publish UI library
 new GradientPicker({
-  el: el,
+  el: '#gradient-color-1',
   stops: [
-    { color: '#af68fe', position: 9 },
-    { color: '#65dfff', position: 75 },
+    { color: '#af68fe', offset: 9 },
+    { color: '#65dfff', offset: 75 },
   ],
   directionType: "percent",
 })
 new GradientPicker({
-  el: el2,
+  el: '#gradient-color-2',
   stops: [
-    { color: '#af68fe', position: 9 },
-    { color: '#65dfff', position: 75 },
+    { color: '#af68fe', offset: 9 },
+    { color: '#65dfff', offset: 75 },
   ],
   directionType: "select",
+  returnType: "object",
 })
 
 const copyCssButton = document.getElementById('copy-css')

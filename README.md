@@ -30,9 +30,9 @@ import '@ldrender/gradient-picker/dist/gradient-picker.css';
 const gradientPicker = new GradientPicker({
   el: document.querySelector('#gradient-picker'),
   stops: [
-    { color: '#ff0000', position: 0 },
-    { color: '#00ff00', position: 50 },
-    { color: '#0000ff', position: 100 },
+    { color: '#ff0000', offset: 0 },
+    { color: '#00ff00', offset: 50 },
+    { color: '#0000ff', offset: 100 },
   ],
   directionType: "percent",
 })
@@ -45,14 +45,16 @@ const gradientPicker = new GradientPicker({
 #### `new GradientPicker(options: GradientPickerOptions): GradientPicker`
 
 Create a new instance of GradientPicker.
+Your element is replaced by the gradient picker. But an input is created with your element id and the value is the gradient string. You can use this input to send the gradient to your server for example.
 
 #### `GradientPickerOptions`
 
 | Name | Type | Default Value | Description |
 | --- | --- | --- | --- |
-| el | HTMLElement | | The element to render the gradient picker |
+| defaultElement | ID | | The element where the gradient picker will be created |
 | stops? | GradientStop[] | | The initial stops of the gradient (optional)|
 | directionType? | string('select' \| 'percent') | 'select' | The type of gradient (optional)|
+| returnType? | string('string' \| 'object') | 'string' | The type of return value (optional)|
 
 #### `GradientStop`
 
@@ -60,38 +62,42 @@ Create a new instance of GradientPicker.
 | --- | --- | --- |
 | id? | number | The id of the stop (optional)|
 | color | string | The color of the stop |
-| position | number | The position of the stop |
+| offset | number | The position of the stop |
 
 #### `GradientPicker Methods`
 
-##### `getGradient(): object`
+##### `getGradient(): object` (returnType: 'object')
 
 Exemple :
 ```json
 {
     "type": "linear",
     "direction": "to right",
-    "stops": [
+    "colorStops": [
         {
-        "color": "#ff0000",
-        "position": 0
+            "color": "#ff0000",
+            "offset": 0
         },
         {
             "color": "#00ff00",
-            "position": 1
+            "offset": 50
+        },
+        {
+            "color": "#0000ff",
+            "offset": 100
         }
     ]
 }
 ```
 
-##### `getGradientString(): string`
+##### `getGradientString(): string` (returnType: 'string')
 
 Exemple :
 ```css
-linear-gradient(to right, #ff0000 0%, #00ff00 100%)
+linear-gradient(to right, #ff0000 0%, #00ff00 50%, #0000ff 100%)
 ```
 
-##### `addColorStop(color: string, position: number): void`
+##### `addColorStop(color: string, offset: number): void`
 
 Add a color stop to the gradient.
 
