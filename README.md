@@ -41,13 +41,14 @@ Create a new instance of GradientPicker.
 | Name | Type | Default Value | Description |
 | --- | --- | --- | --- |
 | el | HTMLElement | | The element to render the gradient picker |
-| stops? | GradientStop[] | | The initial stops of the gradient |
-| directionType? | string('select' \| 'percent') | 'select' | The type of gradient |
+| stops? | GradientStop[] | | The initial stops of the gradient (optional)|
+| directionType? | string('select' \| 'percent') | 'select' | The type of gradient (optional)|
 
 #### `GradientStop`
 
 | Name | Type | Description |
 | --- | --- | --- |
+| id? | number | The id of the stop (optional)|
 | color | string | The color of the stop |
 | position | number | The position of the stop |
 

@@ -14,7 +14,7 @@ export class GradientPicker {
     stops: GradientStop[] = []
     isDragging = false
 
-    constructor({el = document.body, stops = [], directionType = "percent"}: Props) {
+    constructor({el, stops = [], directionType = "percent"}: Props) {
         this.el = el
         this.containerPicker = createGradientElement(this.el, 'gradient-picker')
         this.optionsEl = createGradientElement(this.containerPicker, 'gradient-picker__options')
@@ -64,8 +64,9 @@ export class GradientPicker {
      * @param position The position of the stop (0-100)
      */
     public addColorStop(color: string, position: number) {
-        this.stops.push({ color, position })
-        this.createStopHandler(this.stops.length-1)
+        const id = this.stops[this.stops.length-1]?.id + 1 || 0
+        this.stops.push({ id, color, position })
+        this.createStopHandler(id)
         this.updateElementBackground()
     }
 
@@ -87,7 +88,7 @@ export class GradientPicker {
         const gradient = {
             type,
             direction,
-            stops: [...this.stops]
+            stops: this.stops.map(({color, position}) => ({color, position}))
         }
 
         return gradient
@@ -103,7 +104,8 @@ export class GradientPicker {
     }
 
     private createStopHandler(stopIndex: number) {
-        const colorStop = this.stops[stopIndex]
+        const stopsKeys = this.stops.findIndex(stop => stop.id === stopIndex)
+        const colorStop = this.stops[stopsKeys]
         const stopPositionCeil = Math.ceil(colorStop.position)
 
         // Handler bar
@@ -207,13 +209,15 @@ export class GradientPicker {
     }
 
     private changeColor(stopIndex: number, color: string) {
-        this.stops[stopIndex].color = color
+        const stopsKeys = this.stops.findIndex(stop => stop.id === stopIndex)
+        this.stops[stopsKeys].color = color
         this.colorHandlersEl.querySelectorAll(`input[data-index-color='${stopIndex}']`).forEach((el) => (el as HTMLInputElement).value = color)
         this.previewEl.querySelectorAll(`div.gradient-picker__preview-handler[data-index='${stopIndex}']`).forEach((el) => (el as HTMLElement).style.setProperty('--handler-color', color))
     }
 
     private changePosition(stopIndex: number, position: number) {
-        this.stops[stopIndex].position = position
+        const stopsKeys = this.stops.findIndex(stop => stop.id === stopIndex)
+        this.stops[stopsKeys].position = position
         const stopPositionCeil = Math.ceil(position)
         this.previewEl.querySelectorAll(`div.gradient-picker__preview-handler[data-index='${stopIndex}']`).forEach((el) => (el as HTMLElement).style.setProperty('--handler-position', position+'%'))
         this.colorHandlersEl.querySelectorAll(`div.gradient-picker__colors-variation[data-index='${stopIndex}']`).forEach((el) => (el as HTMLElement).style.setProperty('--color-order', stopPositionCeil.toString()))
@@ -298,6 +302,7 @@ type GradientDirectionType = "select" | "percent"
 type GradientDirection = "top" | "left" | "center" | "bottom" | "right"
 type GradientType = "linear" | "radial"
 type GradientStop = {
+    id : number
     color: string 
     position: number
 }
