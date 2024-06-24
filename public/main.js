@@ -30,3 +30,10 @@ copyCssButton?.addEventListener('click', () => {
   copiedEl?.classList.add('show')
   setTimeout(() => copiedEl?.classList.remove('show'), 500);
 })
+
+
+const gradientColor1 = document.getElementById('gradient-color-1')
+gradientColor1?.addEventListener('change', (e) => {
+  const textarea = document.querySelector("#css")
+  textarea.value = e.target.value
+})

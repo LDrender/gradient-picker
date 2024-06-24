@@ -4,7 +4,7 @@ export class GradientPicker {
     defaultElement: HTMLElement
     containerPicker: HTMLElement
     inputReturn: HTMLInputElement
-    returnType: "string" | "object"
+    returnType: "string" | "object" | "stops-list"
 
     
     optionsEl: HTMLElement
@@ -106,29 +106,38 @@ export class GradientPicker {
     public getGradient(type: GradientType = this.type, direction: GradientDirection | Number = this.direction) {
         const gradient = {
             type,
-            direction,
+            rotation: direction,
             colorStops: this.stops.map(({color, offset}) => ({color, offset}))
         }
 
         return gradient
     }
 
+    public getStops() {
+        return this.stops
+    }
+
     private updateElementBackground() {
         this.previewEl.style.backgroundImage = this.getGradientString('linear', 'right', 'select')
-        
+        const event = new Event('change')
+
         switch (this.returnType) {
             case "string":
                 this.inputReturn!.setAttribute('value', this.getGradientString())
+                this.inputReturn!.dispatchEvent(event)                
                 break
             case "object":
                 this.inputReturn!.setAttribute('value', JSON.stringify(this.getGradient()))
+                this.inputReturn!.dispatchEvent(event)
+                break
+            case "stops-list":
+                this.inputReturn!.setAttribute('value', JSON.stringify(this.getStops()))
+                this.inputReturn!.dispatchEvent(event)
                 break
         }
 
         // ! Update the background of the app (Only for demo purposes)
         //document.getElementById('app')!.style.backgroundImage = this.getGradientString()
-        //let cssTextbox = document.getElementById('css')!
-        //cssTextbox.textContent = this.getGradientString()
     }
 
     private createStopHandler(stopIndex: number) {

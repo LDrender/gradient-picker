@@ -54,7 +54,7 @@ Your element is replaced by the gradient picker. But an input is created with yo
 | defaultElement | ID | | The element where the gradient picker will be created |
 | stops? | GradientStop[] | | The initial stops of the gradient (optional)|
 | directionType? | string('select' \| 'percent') | 'select' | The type of gradient (optional)|
-| returnType? | string('string' \| 'object') | 'string' | The type of return value (optional)|
+| returnType? | string('string' \| 'object' \| 'stops-list' ) | 'string' | The type of return value (optional)|
 
 #### `GradientStop`
 
@@ -95,6 +95,26 @@ Exemple :
 Exemple :
 ```css
 linear-gradient(to right, #ff0000 0%, #00ff00 50%, #0000ff 100%)
+```
+
+##### `getStopList(): GradientStop[]` (returnType: 'stops-list')
+
+Exemple :
+```json
+[
+    {
+        "color": "#ff0000",
+        "offset": 0
+    },
+    {
+        "color": "#00ff00",
+        "offset": 50
+    },
+    {
+        "color": "#0000ff",
+        "offset": 100
+    }
+]
 ```
 
 ##### `addColorStop(color: string, offset: number): void`
