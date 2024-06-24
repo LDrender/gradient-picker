@@ -46,7 +46,7 @@ export class GradientPicker {
     }
 
     private initInputReturn() {
-        const input = createElement('input', { type: 'text', class:'gradient-picker__return', name: 'gradientInput', id: this.defaultElement.id, value: ''}) 
+        const input = createElement('input', { type: 'hidden', class:'gradient-picker__return', name: 'gradientInput', id: this.defaultElement.id, value: ''}) 
         this.containerPicker.append(input)
         return input
     }
@@ -104,10 +104,13 @@ export class GradientPicker {
     }
 
     public getGradient(type: GradientType = this.type, direction: GradientDirection | Number = this.direction) {
+        // Sort the stops by offset
+        const colorStops = [...this.stops].sort((a,b) => a.offset - b.offset)
+
         const gradient = {
             type,
             rotation: direction,
-            colorStops: this.stops.map(({color, offset}) => ({color, offset}))
+            colorStops: colorStops.map(({color, offset}) => ({ color, offset }))
         }
 
         return gradient
