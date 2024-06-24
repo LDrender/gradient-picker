@@ -46,7 +46,7 @@ export class GradientPicker {
     }
 
     private initInputReturn() {
-        const input = createElement('input', { type: 'hidden', name: 'gradientInput', id: this.defaultElement.id, value: ''}) 
+        const input = createElement('input', { type: 'text', class:'gradient-picker__return', name: 'gradientInput', id: this.defaultElement.id, value: ''}) 
         this.containerPicker.append(input)
         return input
     }
