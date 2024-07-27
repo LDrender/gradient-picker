@@ -47,6 +47,9 @@ const gradientPicker = new GradientPicker({
 Create a new instance of GradientPicker.
 Your element is replaced by the gradient picker. But an input is created with your element id and the value is the gradient string. You can use this input to send the gradient to your server for example.
 
+If your element is input and he have value then value use to generate colorSteps
+Value = Methods getGradient(): object
+
 #### `GradientPickerOptions`
 
 | Name | Type | Default Value | Description |

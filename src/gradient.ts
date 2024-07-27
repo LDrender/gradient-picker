@@ -74,9 +74,21 @@ export class GradientPicker {
         this.direction = gradient.rotation
         this.stops = []
         gradient.colorStops.forEach(({ color, offset }) => {
-            this.addColorStop(color, offset)
+            // If offset it's on 0-1 range, convert it to 0-100 (Warning: offset is possibly eg. 0)
+            const newOffset = !this.isFloat(offset) || offset > 1 ? offset : offset * 100
+            this.addColorStop(color, newOffset)
         })
         this.updateElementBackground()
+    }
+
+    /**
+     * Check if a number is a float
+     * 
+     * @param n number
+     * @return boolean
+     */
+    private isFloat(n: number) {
+        return n === +n && n !== (n | 0)
     }
  
     /**
@@ -229,13 +241,13 @@ export class GradientPicker {
     private createStopHandler(stopIndex: number) {
         const stopsKeys = this.stops.findIndex(stop => stop.id === stopIndex)
         const colorStop = this.stops[stopsKeys]
-        const stopPositionCeil = Math.ceil(colorStop.offset)
+        const stopPositionCeil = Math.ceil(colorStop.offset).toString()
 
         // Handler bar
-        const handler = createElement('div', { class: 'gradient-picker__preview-handler', 'data-index': stopIndex.toString() }, { '--handler-position': `${colorStop.offset}%`, '--handler-color': colorStop.color })
+        const handler = createElement('div', { class: 'gradient-picker__preview-handler', 'data-index': stopIndex.toString() }, { '--handler-position': `${stopPositionCeil}%`, '--handler-color': colorStop.color })
         
         // Handler Options
-        const handlerButtons = createElement('div', { class: 'gradient-picker__colors-variation', 'data-index': stopIndex.toString() }, { '--color-order': stopPositionCeil.toString() })
+        const handlerButtons = createElement('div', { class: 'gradient-picker__colors-variation', 'data-index': stopIndex.toString() }, { '--color-order': stopPositionCeil })
 
         // Option remover
         const handlerRemover = createElement('div', { class: 'gradient-picker__colors-remover' })
@@ -253,7 +265,7 @@ export class GradientPicker {
             type: 'number',
             class: 'gradient-picker__colors-position-input',
             'data-index-position': stopIndex.toString(),
-            value: stopPositionCeil.toString()
+            value: stopPositionCeil
         })
         positionWrapper.append(positionInput)
         
@@ -361,8 +373,8 @@ export class GradientPicker {
      */
     private changePosition(stopIndex: number, offset: number) {
         const stopsKeys = this.stops.findIndex(stop => stop.id === stopIndex)
-        this.stops[stopsKeys].offset = offset
         const stopPositionCeil = Math.ceil(offset)
+        this.stops[stopsKeys].offset = stopPositionCeil
         this.previewEl.querySelectorAll(`div.gradient-picker__preview-handler[data-index='${stopIndex}']`).forEach((el) => (el as HTMLElement).style.setProperty('--handler-position', offset+'%'))
         this.colorHandlersEl.querySelectorAll(`div.gradient-picker__colors-variation[data-index='${stopIndex}']`).forEach((el) => (el as HTMLElement).style.setProperty('--color-order', stopPositionCeil.toString()))
         this.colorHandlersEl.querySelectorAll(`input.gradient-picker__colors-position-input[data-index-position='${stopIndex}']`).forEach((el) => (el as HTMLInputElement).value = stopPositionCeil.toString())
