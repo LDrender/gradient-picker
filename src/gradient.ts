@@ -19,11 +19,13 @@ export class GradientPicker {
     isDragging = false // Dragging state
 
     // Constructor for the class
-    constructor({el, stops = [], directionType = "percent", returnType = "string" }: Props) {
+    constructor({el, stops = [], directionType = "percent", returnType = "string", direction, type }: Props) {
         this.defaultElement = document.querySelector(el) as HTMLElement
+        this.direction = direction || 'right'
+        this.type = type || 'linear'
+        this.returnType = returnType
         this.containerPicker = createGradientElement(this.defaultElement, 'gradient-picker')
         this.inputReturn = this.initInputReturn()
-        this.returnType = returnType
 
         this.optionsEl = createGradientElement(this.containerPicker, 'gradient-picker__options')
         this.previewEl = createGradientElement(this.containerPicker, 'gradient-picker__preview')
@@ -477,7 +479,9 @@ interface Props {
     el: string
     stops?: GradientStop[]
     directionType?: GradientDirectionType,
-    returnType?: "string" | "object"
+    returnType?: "string" | "object",
+    direction?: GradientDirection | Number
+    type?: GradientType
 }
 
 type GradientDirectionType = "select" | "percent"

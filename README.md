@@ -11,7 +11,7 @@
   npm install @ldrender/gradient-picker
 ```
 
-### Development or Build
+## Development or Build
 
 ```bash
   npm run dev
@@ -21,7 +21,7 @@
   npm run build
 ```
 
-### Usage
+## Usage
 
 ```javascript
 import GradientPicker from '@ldrender/gradient-picker';
@@ -34,7 +34,10 @@ const gradientPicker = new GradientPicker({
     { color: '#00ff00', offset: 50 },
     { color: '#0000ff', offset: 100 },
   ],
+  type: "linear",
   directionType: "percent",
+  direction: 90,
+  returnType: "object",
 })
 ```
 
@@ -56,10 +59,12 @@ Value = Methods getGradient(): object
 | --- | --- | --- | --- |
 | defaultElement | ID | | The element where the gradient picker will be created |
 | stops? | GradientStop[] | | The initial stops of the gradient (optional)|
+| type? | string('linear' \| 'radial') | 'linear' | The type of gradient (optional)|
 | directionType? | string('select' \| 'percent') | 'select' | The type of gradient (optional)|
+| direction? | string\|int | 'right' | The direction of the gradient (optional)|
 | returnType? | string('string' \| 'object' \| 'stops-list' ) | 'string' | The type of return value (optional)|
 
-#### `GradientStop`
+##### `GradientStop`
 
 | Name | Type | Description |
 | --- | --- | --- |
@@ -67,16 +72,20 @@ Value = Methods getGradient(): object
 | color | string | The color of the stop |
 | offset | number | The position of the stop |
 
-#### `GradientPicker Methods`
+##### `GradientPickerOptions.direction`
 
-##### `getGradient(): object` (returnType: 'object')
+If directionType is 'select' then direction is a string ('top', 'right', 'bottom', 'left', 'center').
+
+### `GradientPicker Methods`
+
+#### `getGradient(): object` (returnType: 'object')
 
 Exemple :
 ```json
 {
     "type": "linear",
-    "direction": "to right",
-    "colorStops": [
+    "direction": "right",
+    "stops": [
         {
             "color": "#ff0000",
             "offset": 0
@@ -93,14 +102,14 @@ Exemple :
 }
 ```
 
-##### `getGradientString(): string` (returnType: 'string')
+#### `getGradientString(): string` (returnType: 'string')
 
 Exemple :
 ```css
 linear-gradient(to right, #ff0000 0%, #00ff00 50%, #0000ff 100%)
 ```
 
-##### `getStopList(): GradientStop[]` (returnType: 'stops-list')
+#### `getStopList(): GradientStop[]` (returnType: 'stops-list')
 
 Exemple :
 ```json
@@ -120,7 +129,6 @@ Exemple :
 ]
 ```
 
-##### `addColorStop(color: string, offset: number): void`
+#### `addColorStop(color: string, offset: number): void`
 
 Add a color stop to the gradient.
-
