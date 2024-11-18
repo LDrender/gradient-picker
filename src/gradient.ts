@@ -192,8 +192,11 @@ export class GradientPicker {
         inputColorPicker.addEventListener('input', e => this.onColorChange(e as InputEvent, stopIndex))
         inputColorText.addEventListener('input', e => this.onColorChange(e as InputEvent, stopIndex))
         handler.addEventListener('mousedown', e => this.onHandlerMouseDown(e))
+        handler.addEventListener('touchstart', e => this.onHandlerMouseDown(e))
         handler.addEventListener('mouseup', e => this.onHandlerMouseUp(e))
+        handler.addEventListener('touchend', e => this.onHandlerMouseUp(e))
         this.previewEl.addEventListener('mousemove', e => this.onHandlerMouseMove(e))
+        this.previewEl.addEventListener('touchmove', e => this.onHandlerMouseMove(e))
         handlerRemover.addEventListener('click', () => {
             this.stops.splice(stopIndex, 1)
             handler.remove()
@@ -212,7 +215,7 @@ export class GradientPicker {
         this.updateElementBackground()
     }
 
-    private onHandlerMouseDown(event: MouseEvent) {
+    private onHandlerMouseDown(event: MouseEvent|TouchEvent) {
         let handlerEl = event.target as HTMLElement
         handlerEl.classList.add('active')
         this.isDragging = true
@@ -224,14 +227,20 @@ export class GradientPicker {
         this.updateElementBackground()
     }
 
-    private onHandlerMouseMove(event: MouseEvent) {
+    private onHandlerMouseMove(event: MouseEvent|TouchEvent) {
         if(!this.isDragging) return
 
         let handlerEl = document.querySelector('.gradient-picker__preview-handler.active')
         if(!handlerEl?.classList.contains('active')) return 
         const stopIndex = ~~(handlerEl.getAttribute('data-index') || 0)
 
-        const newStopPosition = this.getPercentage(event.clientX)
+        let newStopPosition = null as number | null;
+
+        if(event instanceof MouseEvent) {
+            newStopPosition = this.getPercentage(event.clientX)
+        } else {
+            newStopPosition = this.getPercentage(event.touches[0].clientX)
+        }
 
         if(newStopPosition < 0.5 || newStopPosition > 99.5) return
 
@@ -239,7 +248,7 @@ export class GradientPicker {
         this.updateElementBackground()
     }
 
-    private onHandlerMouseUp(event: MouseEvent) {
+    private onHandlerMouseUp(event: MouseEvent|TouchEvent) {
         let handlerEl = event.target as HTMLElement
         handlerEl.classList.remove('active')
         this.isDragging = false

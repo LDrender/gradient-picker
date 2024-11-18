@@ -15,25 +15,41 @@
     <div id="app" class="center-both">
       <div class="container" style="display: flex; gap: 40px; flex-direction: column;">
         <h1 class="title">GradientPicker</h1>
-        <div style="display: flex; gap: 40px;">
-          <div class="card">
-            <input type="gradient-picker" id="gradient-color-1">
-          </div>
-          <div class="card">
-            <input type="gradient-picker" id="gradient-color-2">
-          </div>
-        </div>
-        <div style="display: flex; gap: 40px; justify-content: center;">
-          <div class="card">
-            <div class="css-box">
-              <div class="css-box__header">
-                <h5>CSS Value</h5>
-                <div class="copy-button">
-                  <span id="copied">Copied!</span>
-                  <button id="copy-css">Copy</button>
+        <div>
+          <div style="display: flex; gap: 40px; flex-direction: column;">
+            <h2>Return CSS gradient</h2>
+            <div class="card">
+              <input type="gradient-picker" id="gradient-color-1">
+            </div>
+            <div class="card">
+              <div class="css-box">
+                <div class="css-box__header">
+                  <h5>CSS Value</h5>
+                  <div class="copy-button">
+                    <span id="copied">Copied!</span>
+                    <button id="copy-css">Copy</button>
+                  </div>
                 </div>
+                <textarea name="css" id="css" readonly></textarea>
               </div>
-              <textarea name="css" id="css" readonly></textarea>
+            </div>
+          </div>
+          <div style="display: flex; gap: 40px; flex-direction: column;">
+            <h2>Return JSON</h2>
+            <div class="card">
+              <input type="gradient-picker" id="gradient-color-2">
+            </div>
+            <div class="card">
+              <div class="css-box">
+                <div class="css-box__header">
+                  <h5>CSS Value</h5>
+                  <div class="copy-button">
+                    <span id="copied">Copied!</span>
+                    <button id="copy-css">Copy</button>
+                  </div>
+                </div>
+                <textarea name="css" id="css2" readonly></textarea>
+              </div>
             </div>
           </div>
         </div>

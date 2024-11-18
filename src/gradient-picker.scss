@@ -44,6 +44,7 @@
             align-items: center;
             justify-content: space-between;
             gap: 8px;
+            width: 100%;
 
             input {
                 appearance: none;
@@ -92,6 +93,14 @@
             display: flex;
             gap: 8px;
             align-items: center;
+            width: 100%;
+            width: -moz-available;          /* WebKit-based browsers will ignore this. */
+            width: -webkit-fill-available;  /* Mozilla-based browsers will ignore this. */
+            width: fill-available;
+
+            input {
+                width: 100%;
+            }
         }
 
         &-remover {
@@ -112,6 +121,10 @@
         }
 
         &-position {
+            @media screen and (max-width: 768px) {
+                width: 30%;
+            }
+
             input {
                 margin: 0;
                 border: unset;

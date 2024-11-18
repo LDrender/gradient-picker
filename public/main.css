@@ -44,6 +44,17 @@ body {
   width: min(1000px, 100%);
 }
 
+.container > div {
+  display: flex; 
+  gap: 40px;
+}
+
+@media screen and (max-width: 768px) {
+  .container > div {
+    flex-direction: column;
+  }
+}
+
 h1 {
   font-size: clamp(3em, 5vw, 4em);
   font-family: 'Kaushan Script', 'arial';
@@ -64,7 +75,7 @@ a:hover {
   color: white;
 }
 #app {
-  height: 100vh;
+  min-height: 100vh;
   width: 100%;
   margin: 0 auto;
   padding: 2rem;
@@ -75,7 +86,12 @@ a:hover {
   background-color: white;
   padding: 1rem;
   border-radius: 1rem;
-  width: 50%;
+}
+
+@media screen and (max-width: 768px) {
+  .card {
+    width: 100%;
+  }
 }
 
 textarea {
@@ -119,4 +135,10 @@ textarea {
 }
 #copy-css:hover {
   background-color: #6169ff;
+}
+
+h2 {
+  font-size: 2em;
+  color: white;
+  margin-bottom: 0;
 }
