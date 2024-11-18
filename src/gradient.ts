@@ -277,8 +277,6 @@ export class GradientPicker {
         handler.addEventListener('touchstart', e => this.onHandlerMouseDown(e))
         handler.addEventListener('mouseup', e => this.onHandlerMouseUp(e))
         handler.addEventListener('touchend', e => this.onHandlerMouseUp(e))
-        this.previewEl.addEventListener('mousemove', e => this.onHandlerMouseMove(e))
-        this.previewEl.addEventListener('touchmove', e => this.onHandlerMouseMove(e))
         handlerRemover.addEventListener('click', () => {
             this.stops.splice(stopIndex, 1)
             handler.remove()
@@ -320,7 +318,7 @@ export class GradientPicker {
      * @param event InputEvent
      * @param index number
      */
-    onPositionChange(event: InputEvent, index: number) {
+    private onPositionChange(event: InputEvent, index: number) {
         const newPosition = parseInt((event.target as HTMLInputElement).value)
         this.changePosition(index, newPosition)
         this.updateElementBackground()
@@ -454,7 +452,15 @@ export class GradientPicker {
     /**
      * Add event listeners
      */
+    private isEventAttached = false;
+
     private listener() {
+        if (this.isEventAttached) return; // Si déjà attaché, ne rien faire
+        this.isEventAttached = true;
+
+        this.previewEl.addEventListener('mousemove', e => this.onHandlerMouseMove(e));
+        this.previewEl.addEventListener('touchmove', e => this.onHandlerMouseMove(e))
+
         this.previewEl.addEventListener('click', e => {
             if((e.target as HTMLElement).classList.contains('gradient-picker__preview-handler') || this.isDragging) return
             if(!this.previewEl.contains(e.target as HTMLElement)) return
