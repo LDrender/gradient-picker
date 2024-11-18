@@ -63,7 +63,7 @@ export class GradientPicker {
      * @return boolean
      */
     private isValidGradient(gradient: any): gradient is ReturnType<typeof this.getGradient> {
-        return gradient && typeof gradient === 'object' && 'type' in gradient && 'rotation' in gradient && 'colorStops' in gradient
+        return gradient && typeof gradient === 'object' && 'type' in gradient && 'direction' in gradient && 'stops' in gradient
     }
 
     /**
@@ -73,9 +73,9 @@ export class GradientPicker {
      */
     private initFromGradient(gradient: ReturnType<typeof this.getGradient>) {
         this.type = gradient.type
-        this.direction = gradient.rotation
+        this.direction = gradient.direction
         this.stops = []
-        gradient.colorStops.forEach(({ color, offset }) => {
+        gradient.stops.forEach(({ color, offset }) => {
             // If offset it's on 0-1 range, convert it to 0-100 (Warning: offset is possibly eg. 0)
             const newOffset = !this.isFloat(offset) || offset > 1 ? offset : offset * 100
             this.addColorStop(color, newOffset)
@@ -195,8 +195,8 @@ export class GradientPicker {
 
         const gradient = {
             type,
-            rotation: direction,
-            colorStops: colorStops.map(({color, offset}) => ({ color, offset }))
+            direction: direction,
+            stops: colorStops.map(({color, offset}) => ({ color, offset }))
         }
 
         return gradient
