@@ -209,13 +209,13 @@ export class GradientPicker {
 
     private setupSliderListeners(): void {
         this.sliderEl.addEventListener('mousemove', this.handleMouseMove)
-        this.sliderEl.addEventListener('touchmove', this.handleMouseMove)
+        this.sliderEl.addEventListener('touchmove', this.handleMouseMove, { passive: false })
         this.sliderEl.addEventListener('click', this.handleSliderClick)
 
         this.sliderEl.addEventListener('mousedown', this.handleMouseDown)
         this.sliderEl.addEventListener('mouseup', this.handleMouseUp)
-        this.sliderEl.addEventListener('touchstart', this.handleMouseDown)
-        this.sliderEl.addEventListener('touchend', this.handleMouseUp)
+        this.sliderEl.addEventListener('touchstart', this.handleMouseDown, { passive: true })
+        this.sliderEl.addEventListener('touchend', this.handleMouseUp, { passive: true })
 
         document.addEventListener('mouseup', this.handleMouseUp)
     }
@@ -246,8 +246,6 @@ export class GradientPicker {
 
     private handleMouseMove = (event: MouseEvent | TouchEvent): void => {
         if (!this.isDragging) return
-
-        console.log('dragging')
 
         const activeHandler = this.sliderEl.querySelector('.gradient-picker__slider-handler.active')
         if (!activeHandler || !(activeHandler instanceof HTMLElement)) return
