@@ -5,8 +5,8 @@ import '../src/gradient-picker.scss'
 new GradientPicker({
     el: '#gradient-color-1',
     stops: [
-        { color: '#af68fe', offset: 9 },
-        { color: '#65dfff', offset: 75 },
+        { color: '#fe6767', offset: 9 },
+        { color: '#f566ff', offset: 75 },
     ],
     directionType: "percent",
     preview: true,
@@ -35,13 +35,22 @@ copyCssButton?.addEventListener('click', () => {
 
 
 const gradientColor1 = document.getElementById('gradient-color-1')
-gradientColor1?.addEventListener('change', (e) => {
-    const textarea = document.querySelector("#css")
-    textarea.value = e.target.value
-})
+gradientColor1?.addEventListener('change', e => updateGradientColor1(e))
 
 const gradientColor2 = document.getElementById('gradient-color-2')
-gradientColor2?.addEventListener('change', (e) => {
+gradientColor2?.addEventListener('change', e => updateGradientColor2(e))
+
+function updateGradientColor1(e) {
+    const textarea = document.querySelector("#css")
+    const el1 = e ? e.target : gradientColor1
+    textarea.value = el1?.value
+}
+
+function updateGradientColor2(e) {
     const textarea = document.querySelector("#css2")
-    textarea.value = e.target.value
-})
+    const el2 = e ? e.target : gradientColor2
+    textarea.value = el2?.value
+}
+
+updateGradientColor1()
+updateGradientColor2()
