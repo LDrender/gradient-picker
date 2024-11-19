@@ -312,7 +312,7 @@ export class GradientPicker {
     }
 
     private setupInputListeners(): void {
-        this.typeInput?.addEventListener('input', (e) => {
+        this.typeInput?.addEventListener('input', () => {
             this.type = this.typeInput?.value as GradientType;
             
             // Désactiver/Activer les contrôles de direction
