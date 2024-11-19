@@ -81,6 +81,7 @@ export class GradientUtils {
             if (direction >= 270) return "at center left"
             if (direction >= 180) return "at center bottom"
             if (direction >= 90) return "at center right"
+            if (direction == 0) return "at center"
             return "at center top"
         }
         return `${direction}deg`

@@ -45,7 +45,7 @@ export class GradientPicker {
     constructor({
         el,
         stops = [],
-        direction,
+        direction = 90,
         directionType = "percent",
         directionRadial = true,
         returnType = "string",
@@ -63,7 +63,6 @@ export class GradientPicker {
         }
         
         this.defaultElement = element as HTMLElement
-        this.direction = direction || 'right'
         this.type = type || 'linear'
         this.returnType = returnType as ReturnType
         this.preview = preview
@@ -72,7 +71,7 @@ export class GradientPicker {
         // Initialisation dans l'ordre
         this.initializeElements()
         this.initializeHandlerManager()
-        this.initDirection(directionType)
+        this.initDirection(directionType, direction)
         this.initializeGradient(stops)
         this.setupEventListeners()
     }
@@ -86,9 +85,12 @@ export class GradientPicker {
         }
 
         this.optionsEl = createGradientElement(this.containerPicker, 'gradient-picker__options')
+
+
         this.sliderEl = createGradientElement(this.containerPicker, 'gradient-picker__slider')
         this.colorHandlersEl = createGradientElement(this.containerPicker, 'gradient-picker__colors')
         this.typeInput = createGradientSelect(this.optionsEl, ["linear", "radial"], 'gradient-picker__select')
+        this.typeInput.value = this.type
         
         this.defaultElement.replaceWith(this.containerPicker)
     }
@@ -114,7 +116,7 @@ export class GradientPicker {
         )
     }
 
-    public initDirection(directionType: GradientDirectionType = "select"): void {
+    public initDirection(directionType: GradientDirectionType = "select", direction: GradientDirection | number): void {
         this.directionType = directionType
         this.directionTypeDefault = directionType
         this.directionInput?.remove()
@@ -125,7 +127,8 @@ export class GradientPicker {
                 ["top", "left", "center", "bottom", "right"],
                 'gradient-picker__select'
             )
-            this.direction = "right"
+            this.directionInput.value = typeof direction === 'string' ? direction : 'right'
+            this.direction = this.directionInput.value as GradientDirection
         } else {
             this.directionInput = createElement('input', {
                 class: 'gradient-picker__input',
@@ -135,7 +138,8 @@ export class GradientPicker {
                 max: '360'
             })
             this.optionsEl.append(this.directionInput)
-            this.direction = 0
+            this.directionInput.value = typeof direction === 'number' ? direction.toString() : '0'
+            this.direction = parseInt(this.directionInput.value, 10)
         }
 
         this.directionInput.addEventListener('input', () => {

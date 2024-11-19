@@ -155,11 +155,12 @@ try {
 ### Radial Gradients
 
 - string: `top`, `right`, `bottom`, `left`, `center`
-- integer: 0 - 89 = `at center top`
-- integer: 90 - 179 = `at center right`,
-- integer: 180 - 269 = `at center bottom`,
-- integer: 270 - 359 = `at center left`
-- integer: 360 = `at center top`
+- integer: `0` = `at center`
+- integer: `1 - 89` = `at center top`
+- integer: `90 - 179` = `at center right`,
+- integer: `180 - 269` = `at center bottom`,
+- integer: `270 - 359` = `at center left`
+- integer: `360` = `at center top`
 
 ## Color Support
 

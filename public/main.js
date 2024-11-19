@@ -9,6 +9,8 @@ new GradientPicker({
         { color: '#f566ff', offset: 75 },
     ],
     directionType: "percent",
+    direction: 90,
+    type: 'radial',
     preview: true,
     directionRadial: false,
 })
