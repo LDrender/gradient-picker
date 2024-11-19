@@ -1,6 +1,7 @@
 import { createElement, createGradientElement, createGradientSelect } from "./utils"
 import { StopHandlerManager } from './handlers'
-import { GradientUtils } from './gradientUtils'
+import { GradientUtils, ColorUtils, GradientValidation } from './utils'
+import { GradientParser } from "./parsers";
 import { 
     GradientDirection,
     GradientDirectionType,
@@ -9,7 +10,7 @@ import {
     GradientType,
     GradientObject,
     ReturnType
-} from './types'
+} from './types/gradient'
 
 export class GradientPicker {
     // Utilisation de ! pour indiquer que ces propriétés seront définitivement assignées
@@ -19,10 +20,12 @@ export class GradientPicker {
     private returnType!: ReturnType
     private optionsEl!: HTMLElement
     private previewEl!: HTMLElement
+    private sliderEl!: HTMLElement
     private colorHandlersEl!: HTMLElement
     private handlerManager!: StopHandlerManager
 
     // Propriétés avec valeurs par défaut
+    private preview: Boolean = false
     private direction: GradientDirection | number = 'right'
     private directionType: GradientDirectionType = "select"
     private directionInput: HTMLSelectElement | HTMLInputElement | null = null
@@ -38,18 +41,24 @@ export class GradientPicker {
         directionType = "percent",
         returnType = "string",
         direction,
-        type
+        type,
+        preview = false
     }: GradientPickerProps) {
         // Vérification de l'existence de l'élément
         const element = document.querySelector(el)
         if (!element) {
             throw new Error(`Element with selector "${el}" not found`)
         }
+
+        if (stops.length) {
+            GradientValidation.validateStops(stops)
+        }
         
         this.defaultElement = element as HTMLElement
         this.direction = direction || 'right'
         this.type = type || 'linear'
         this.returnType = returnType as ReturnType
+        this.preview = preview
         
         // Initialisation dans l'ordre
         this.initializeElements()
@@ -62,8 +71,13 @@ export class GradientPicker {
     private initializeElements(): void {
         this.containerPicker = createGradientElement(this.defaultElement, 'gradient-picker')
         this.inputReturn = this.createInputReturn()
+
+        if (this.preview) {
+            this.previewEl = createGradientElement(this.containerPicker, 'gradient-picker__preview')
+        }
+
         this.optionsEl = createGradientElement(this.containerPicker, 'gradient-picker__options')
-        this.previewEl = createGradientElement(this.containerPicker, 'gradient-picker__preview')
+        this.sliderEl = createGradientElement(this.containerPicker, 'gradient-picker__slider')
         this.colorHandlersEl = createGradientElement(this.containerPicker, 'gradient-picker__colors')
         this.typeInput = createGradientSelect(this.optionsEl, ["linear", "radial"], 'gradient-picker__select')
         
@@ -85,7 +99,7 @@ export class GradientPicker {
     private initializeHandlerManager(): void {
         this.handlerManager = new StopHandlerManager(
             this.stops,
-            this.previewEl,
+            this.sliderEl,
             this.colorHandlersEl,
             () => this.updateElementBackground()
         )
@@ -145,9 +159,19 @@ export class GradientPicker {
         stops.forEach(({color, offset}) => this.addColorStop(color, offset))
     }
 
+    public importFromCSSString(gradientStr: string): void {
+        const parsed = GradientParser.parseGradientString(gradientStr)
+        if (parsed) {
+            this.loadGradientFromObject(parsed)
+        } else {
+            throw new Error('Invalid gradient string format')
+        }
+    }
+
     public addColorStop(color: string, offset: number): void {
+        const normalizedColor = ColorUtils.normalizeColor(color)
         const id = this.stops[this.stops.length-1]?.id + 1 || 0
-        this.stops.push({ id, color, offset })
+        this.stops.push({ id, color: normalizedColor, offset })
         this.handlerManager.createHandler(id)
         this.updateElementBackground()
     }
@@ -179,19 +203,19 @@ export class GradientPicker {
         if (this.isEventAttached) return
         this.isEventAttached = true
 
-        this.setupPreviewListeners()
+        this.setupSliderListeners()
         this.setupInputListeners()
     }
 
-    private setupPreviewListeners(): void {
-        this.previewEl.addEventListener('mousemove', this.handleMouseMove)
-        this.previewEl.addEventListener('touchmove', this.handleMouseMove)
-        this.previewEl.addEventListener('click', this.handlePreviewClick)
+    private setupSliderListeners(): void {
+        this.sliderEl.addEventListener('mousemove', this.handleMouseMove)
+        this.sliderEl.addEventListener('touchmove', this.handleMouseMove)
+        this.sliderEl.addEventListener('click', this.handleSliderClick)
 
-        this.previewEl.addEventListener('mousedown', this.handleMouseDown)
-        this.previewEl.addEventListener('mouseup', this.handleMouseUp)
-        this.previewEl.addEventListener('touchstart', this.handleMouseDown)
-        this.previewEl.addEventListener('touchend', this.handleMouseUp)
+        this.sliderEl.addEventListener('mousedown', this.handleMouseDown)
+        this.sliderEl.addEventListener('mouseup', this.handleMouseUp)
+        this.sliderEl.addEventListener('touchstart', this.handleMouseDown)
+        this.sliderEl.addEventListener('touchend', this.handleMouseUp)
 
         document.addEventListener('mouseup', this.handleMouseUp)
     }
@@ -205,7 +229,7 @@ export class GradientPicker {
 
     private handleMouseDown = (event: MouseEvent | TouchEvent): void => {
         const target = event.target as HTMLElement
-        if (target.classList.contains('gradient-picker__preview-handler')) {
+        if (target.classList.contains('gradient-picker__slider-handler')) {
             this.isDragging = true
             target.classList.add('active')
         }
@@ -213,7 +237,8 @@ export class GradientPicker {
 
     private handleMouseUp = (event: MouseEvent | TouchEvent): void => {
         this.isDragging = false
-        const activeHandler = document.querySelector('.gradient-picker__preview-handler.active')
+        const target = event.target as HTMLElement;
+        const activeHandler = target.querySelector('.gradient-picker__slider-handler.active')
         if (activeHandler) {
             activeHandler.classList.remove('active')
         }
@@ -224,7 +249,7 @@ export class GradientPicker {
 
         console.log('dragging')
 
-        const activeHandler = this.previewEl.querySelector('.gradient-picker__preview-handler.active')
+        const activeHandler = this.sliderEl.querySelector('.gradient-picker__slider-handler.active')
         if (!activeHandler || !(activeHandler instanceof HTMLElement)) return
     
         const stopIndex = parseInt(activeHandler.getAttribute('data-index') || '0', 10)
@@ -238,7 +263,7 @@ export class GradientPicker {
             clientX = event.touches[0].clientX
         }
 
-        const newPosition = GradientUtils.getPercentage(clientX, this.previewEl)
+        const newPosition = GradientUtils.getPercentage(clientX, this.sliderEl)
 
         if (newPosition < -1 || newPosition > 100) return
 
@@ -262,14 +287,14 @@ export class GradientPicker {
         }
     }
 
-    // Modification de la méthode handlePreviewClick pour éviter les conflits
-    private handlePreviewClick = (event: MouseEvent): void => {
+    // Modification de la méthode handleSliderClick pour éviter les conflits
+    private handleSliderClick = (event: MouseEvent): void => {
         const target = event.target as HTMLElement
-        if (target.classList.contains('gradient-picker__preview-handler')) return
+        if (target.classList.contains('gradient-picker__slider-handler')) return
         if (this.isDragging) return
-        if (!this.previewEl.contains(target)) return
+        if (!this.sliderEl.contains(target)) return
 
-        const newPosition = GradientUtils.getPercentage(event.clientX, this.previewEl)
+        const newPosition = GradientUtils.getPercentage(event.clientX, this.sliderEl)
         this.addColorStop("#333333", newPosition)
     }
 
@@ -292,13 +317,24 @@ export class GradientPicker {
     }
 
     private updateElementBackground(): void {
-        this.previewEl.style.backgroundImage = GradientUtils.getGradientString(
+        const gradientString = GradientUtils.getGradientString(
             this.stops,
             "linear",
             "right",
             "select"
         )
-
+    
+        this.sliderEl.style.backgroundImage = gradientString
+        
+        if (this.preview && this.previewEl) {
+            this.previewEl.style.backgroundImage = GradientUtils.getGradientString(
+                this.stops,
+                this.type,
+                this.direction,
+                this.directionType
+            )
+        }
+        
         this.updateReturnValue()
     }
 

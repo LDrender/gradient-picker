@@ -14,6 +14,8 @@
 - 💾 Flexible output formats (CSS string, object, or stops list)
 - 📱 Mobile-friendly with touch support
 - 🎯 Precise control with numeric inputs
+- 🖼️ Optional preview window
+- 🌈 Comprehensive color format support (Hex, RGB, HSL, Named Colors)
 
 ## Installation
 
@@ -31,6 +33,7 @@ import '@ldrender/gradient-picker/dist/gradient-picker.css';
 // Initialize the gradient picker
 const gradientPicker = new GradientPicker({
   el: '#gradient-picker',
+  preview: true, // Enable preview window
   stops: [
     { color: '#ff0000', offset: 0 },
     { color: '#00ff00', offset: 50 },
@@ -49,6 +52,56 @@ npm run dev
 npm run build
 ```
 
+## Color Support
+
+The gradient picker supports various color formats:
+
+### Supported Formats
+
+```javascript
+// Hexadecimal
+gradientPicker.addColorStop('#ff0000', 0);    // Standard hex
+gradientPicker.addColorStop('#f00', 0);       // Short hex
+
+// RGB/RGBA
+gradientPicker.addColorStop('rgb(255, 0, 0)', 0);
+gradientPicker.addColorStop('rgba(255, 0, 0, 0.5)', 0);
+
+// HSL/HSLA
+gradientPicker.addColorStop('hsl(0, 100%, 50%)', 0);
+gradientPicker.addColorStop('hsla(0, 100%, 50%, 0.5)', 0);
+
+// Named Colors
+gradientPicker.addColorStop('red', 0);
+gradientPicker.addColorStop('blue', 50);
+gradientPicker.addColorStop('green', 100);
+```
+
+### Color Normalization
+
+All colors are automatically normalized to hexadecimal format internally for consistent handling and optimal performance. This normalization is transparent to the user, and the original color format is preserved in the output when using `getGradientString()`.
+
+### Input Methods
+
+Colors can be input in two ways:
+1. Using the color picker input (supports system color picker)
+2. Direct text input supporting any valid CSS color format
+
+Example with different formats:
+```javascript
+// Initialize with various color formats
+const gradientPicker = new GradientPicker({
+  el: '#gradient-picker',
+  preview: true,
+  stops: [
+    { color: '#ff0000', offset: 0 },          // Hex
+    { color: 'rgb(0, 255, 0)', offset: 33 },  // RGB
+    { color: 'blue', offset: 66 },            // Named color
+    { color: 'hsl(270, 100%, 50%)', offset: 100 } // HSL
+  ]
+});
+```
+
 ## Configuration
 
 ### Constructor Options
@@ -61,6 +114,7 @@ interface GradientPickerOptions {
   directionType?: 'select' | 'percent'; // Direction input type (default: 'select')
   direction?: string | number;    // Gradient direction (default: 'right')
   returnType?: 'string' | 'object' | 'stops-list'; // Output format (default: 'string')
+  preview?: boolean;             // Enable preview window (default: false)
 }
 
 interface GradientStop {
@@ -132,11 +186,15 @@ gradientPicker.addColorStop('#ff0000', 25);
 
 ## DOM Structure
 
-When initialized, the gradient picker:
-1. Replaces the target element with the picker interface
-2. Creates a hidden input with the target element's ID
-3. Updates the input value whenever the gradient changes
-4. Maintains the original element's form functionality
+When initialized, the gradient picker creates the following structure:
+1. Container element (`gradient-picker`)
+2. Preview window (if enabled) (`gradient-picker__preview`)
+3. Options section (`gradient-picker__options`)
+4. Gradient slider (`gradient-picker__slider`)
+5. Color handlers section (`gradient-picker__colors`)
+6. Hidden input with the target element's ID
+
+The picker replaces the target element while maintaining the original form functionality.
 
 ## Events
 

@@ -16,6 +16,7 @@ export interface GradientPickerProps {
     returnType?: "string" | "object"
     direction?: GradientDirection | number
     type?: GradientType
+    preview?: boolean
 }
 
 export interface GradientObject {

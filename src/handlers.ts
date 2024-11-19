@@ -3,13 +3,13 @@ import { GradientStop } from './types'
 
 export class StopHandlerManager {
     private stops: GradientStop[]
-    private previewEl: HTMLElement
+    private sliderEl: HTMLElement
     private colorHandlersEl: HTMLElement
     private updateCallback: () => void
 
-    constructor(stops: GradientStop[], previewEl: HTMLElement, colorHandlersEl: HTMLElement, updateCallback: () => void) {
+    constructor(stops: GradientStop[], sliderEl: HTMLElement, colorHandlersEl: HTMLElement, updateCallback: () => void) {
         this.stops = stops
-        this.previewEl = previewEl
+        this.sliderEl = sliderEl
         this.colorHandlersEl = colorHandlersEl
         this.updateCallback = updateCallback
     }
@@ -22,13 +22,13 @@ export class StopHandlerManager {
         const handler = this.createHandlerElement(stopIndex, stopPositionCeil, colorStop.color)
         const handlerButtons = this.createHandlerButtons(stopIndex, stopPositionCeil, colorStop.color)
 
-        this.previewEl.append(handler)
+        this.sliderEl.append(handler)
         this.colorHandlersEl.append(handlerButtons)
     }
 
     private createHandlerElement(stopIndex: number, position: string, color: string): HTMLElement {
         return createElement('div', {
-            class: 'gradient-picker__preview-handler',
+            class: 'gradient-picker__slider-handler',
             'data-index': stopIndex.toString()
         }, {
             '--handler-position': `${position}%`,
@@ -96,9 +96,14 @@ export class StopHandlerManager {
     private createRemoveButton(stopIndex: number): HTMLElement {
         const button = createElement('div', { class: 'gradient-picker__colors-remover' })
         button.addEventListener('click', () => {
+            if (this.stops.length <= 2) {
+                throw new Error('Gradient must have at least 2 color stops')
+                return
+            }
+
             const index = this.stops.findIndex(stop => stop.id === stopIndex)
             this.stops.splice(index, 1)
-            this.previewEl.querySelector(`[data-index="${stopIndex}"]`)?.remove()
+            this.sliderEl.querySelector(`[data-index="${stopIndex}"]`)?.remove()
             this.colorHandlersEl.querySelector(`[data-index="${stopIndex}"]`)?.remove()
             this.updateCallback()
         })
@@ -113,7 +118,7 @@ export class StopHandlerManager {
         this.colorHandlersEl.querySelectorAll(`input[data-index-color='${stopIndex}']`)
             .forEach((el) => (el as HTMLInputElement).value = newColor)
         
-        this.previewEl.querySelectorAll(`div.gradient-picker__preview-handler[data-index='${stopIndex}']`)
+        this.sliderEl.querySelectorAll(`div.gradient-picker__slider-handler[data-index='${stopIndex}']`)
             .forEach((el) => (el as HTMLElement).style.setProperty('--handler-color', newColor))
 
         this.updateCallback()
@@ -125,7 +130,7 @@ export class StopHandlerManager {
         const stopPositionCeil = Math.ceil(newPosition)
         this.stops[stopsKeys].offset = stopPositionCeil
 
-        this.previewEl.querySelectorAll(`div.gradient-picker__preview-handler[data-index='${stopIndex}']`)
+        this.sliderEl.querySelectorAll(`div.gradient-picker__slider-handler[data-index='${stopIndex}']`)
             .forEach((el) => (el as HTMLElement).style.setProperty('--handler-position', newPosition+'%'))
         
         this.colorHandlersEl.querySelectorAll(`div.gradient-picker__colors-variation[data-index='${stopIndex}']`)

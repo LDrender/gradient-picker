@@ -9,6 +9,7 @@ new GradientPicker({
         { color: '#65dfff', offset: 75 },
     ],
     directionType: "percent",
+    preview: true,
 })
 new GradientPicker({
     el: '#gradient-color-2',
@@ -18,6 +19,7 @@ new GradientPicker({
     ],
     directionType: "select",
     returnType: "object",
+    preview: true,
 })
 
 const copyCssButton = document.getElementById('copy-css')
