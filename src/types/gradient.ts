@@ -12,9 +12,11 @@ export interface GradientStop {
 export interface GradientPickerProps {
     el: string
     stops?: GradientStop[]
-    directionType?: GradientDirectionType
-    returnType?: "string" | "object"
     direction?: GradientDirection | number
+    directionType?: GradientDirectionType
+    directionRadial?: boolean
+    directionRadialType?: GradientDirectionType
+    returnType?: "string" | "object"
     type?: GradientType
     preview?: boolean
 }

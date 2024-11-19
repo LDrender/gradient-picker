@@ -10,6 +10,7 @@ new GradientPicker({
     ],
     directionType: "percent",
     preview: true,
+    directionRadial: false,
 })
 new GradientPicker({
     el: '#gradient-color-2',
@@ -20,6 +21,7 @@ new GradientPicker({
     directionType: "select",
     returnType: "object",
     preview: true,
+    
 })
 
 const copyCssButton = document.getElementById('copy-css')

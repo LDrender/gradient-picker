@@ -65,7 +65,7 @@ export class GradientUtils {
         if (type === 'radial') {
             const radialPositions: Record<GradientDirection, string> = {
                 "bottom": "at center bottom",
-                "center": "",
+                "center": "at center",
                 "left": "at left center",
                 "right": "at center right",
                 "top": "at center top",

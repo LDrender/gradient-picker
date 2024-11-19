@@ -28,7 +28,9 @@ export class GradientPicker {
     private preview: Boolean = false
     private direction: GradientDirection | number = 'right'
     private directionType: GradientDirectionType = "select"
+    private directionTypeDefault: GradientDirectionType = "select"
     private directionInput: HTMLSelectElement | HTMLInputElement | null = null
+    private directionRadial: boolean = true
     private type: GradientType = "linear"
     private typeInput: HTMLSelectElement | null = null
     private stops: GradientStop[] = []
@@ -43,9 +45,10 @@ export class GradientPicker {
     constructor({
         el,
         stops = [],
-        directionType = "percent",
-        returnType = "string",
         direction,
+        directionType = "percent",
+        directionRadial = true,
+        returnType = "string",
         type,
         preview = false
     }: GradientPickerProps) {
@@ -64,6 +67,7 @@ export class GradientPicker {
         this.type = type || 'linear'
         this.returnType = returnType as ReturnType
         this.preview = preview
+        this.directionRadial = directionRadial
         
         // Initialisation dans l'ordre
         this.initializeElements()
@@ -112,6 +116,7 @@ export class GradientPicker {
 
     public initDirection(directionType: GradientDirectionType = "select"): void {
         this.directionType = directionType
+        this.directionTypeDefault = directionType
         this.directionInput?.remove()
 
         if (directionType === "select") {
@@ -307,9 +312,23 @@ export class GradientPicker {
     }
 
     private setupInputListeners(): void {
-        this.typeInput?.addEventListener('input', () => {
-            this.type = this.typeInput?.value as GradientType
-            this.updateGradient()
+        this.typeInput?.addEventListener('input', (e) => {
+            this.type = this.typeInput?.value as GradientType;
+            
+            // Désactiver/Activer les contrôles de direction
+            if (this.directionInput && !this.directionRadial) {
+                if (this.type === 'radial') {
+                    this.directionInput.style.display = 'none';
+                    this.directionType = 'select';
+                    this.direction = 'center';
+                } else {
+                    this.directionInput.style.display = '';
+                    this.directionType = this.directionTypeDefault;
+                    this.direction = this.directionInput.value as GradientDirection;
+                }
+            }
+            
+            this.updateGradient();
         })
     }
 

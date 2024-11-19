@@ -64,8 +64,9 @@ interface GradientPickerProps {
   el: string;                    // Selector for the target element
   stops?: GradientStop[];        // Initial color stops
   type?: 'linear' | 'radial';    // Gradient type (default: 'linear')
-  directionType?: 'select' | 'percent'; // Direction input type (default: 'select')
   direction?: string | number;    // Gradient direction (default: 'right')
+  directionType?: 'select' | 'percent'; // Direction input type (default: 'select')
+  directionRadial?: boolean;     // For gradient type 'radial', select if direction input is displayed (default: true)
   returnType?: 'string' | 'object' | 'stops-list'; // Output format (default: 'string')
   preview?: boolean;             // Enable preview window (default: false)
 }
@@ -143,6 +144,22 @@ try {
   console.error('Invalid color format');
 }
 ```
+
+## Gradient Type Support
+
+### Linear Gradients
+
+- integer: `0 - 360`
+- string: `top`, `right`, `bottom`, `left`
+
+### Radial Gradients
+
+- string: `top`, `right`, `bottom`, `left`, `center`
+- integer: 0 - 89 = `at center top`
+- integer: 90 - 179 = `at center right`,
+- integer: 180 - 269 = `at center bottom`,
+- integer: 270 - 359 = `at center left`
+- integer: 360 = `at center top`
 
 ## Color Support
 
