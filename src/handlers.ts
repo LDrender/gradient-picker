@@ -27,13 +27,14 @@ export class StopHandlerManager {
     }
 
     private createHandlerElement(stopIndex: number, position: string, color: string): HTMLElement {
-        return createElement('div', {
+        const handler = createElement('div', {
             class: 'gradient-picker__slider-handler',
             'data-index': stopIndex.toString()
         }, {
             '--handler-position': `${position}%`,
             '--handler-color': color
         })
+        return handler
     }
 
     private createHandlerButtons(stopIndex: number, position: string, color: string): HTMLElement {

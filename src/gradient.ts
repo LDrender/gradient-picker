@@ -35,6 +35,11 @@ export class GradientPicker {
     private isDragging = false
     private isEventAttached = false
 
+    private rafId?: number
+    private debounceTimeout: number | null = null
+    private readonly DEBOUNCE_DELAY = 16
+    private currentPointer: number | null = null
+
     constructor({
         el,
         stops = [],
@@ -101,7 +106,7 @@ export class GradientPicker {
             this.stops,
             this.sliderEl,
             this.colorHandlersEl,
-            () => this.updateElementBackground()
+            () => this.updateGradient()
         )
     }
 
@@ -130,7 +135,7 @@ export class GradientPicker {
 
         this.directionInput.addEventListener('input', () => {
             this.direction = this.directionInput?.value as GradientDirection
-            this.updateElementBackground()
+            this.updateGradient()
         })
     }
 
@@ -173,7 +178,7 @@ export class GradientPicker {
         const id = this.stops[this.stops.length-1]?.id + 1 || 0
         this.stops.push({ id, color: normalizedColor, offset })
         this.handlerManager.createHandler(id)
-        this.updateElementBackground()
+        this.updateGradient()
     }
 
     private isValidGradient(gradient: any): gradient is GradientObject {
@@ -196,7 +201,7 @@ export class GradientPicker {
             this.addColorStop(color, newOffset)
         })
         
-        this.updateElementBackground()
+        this.updateGradient()
     }
 
     private setupEventListeners(): void {
@@ -208,92 +213,104 @@ export class GradientPicker {
     }
 
     private setupSliderListeners(): void {
-        this.sliderEl.addEventListener('mousemove', this.handleMouseMove)
-        this.sliderEl.addEventListener('touchmove', this.handleMouseMove, { passive: false })
-        this.sliderEl.addEventListener('click', this.handleSliderClick)
+        // Remplacer les anciens événements mouse/touch par pointer events
+        this.sliderEl.addEventListener('pointerdown', this.handlePointerDown)
+        this.sliderEl.addEventListener('pointermove', this.handlePointerMove)
+        this.sliderEl.addEventListener('pointerup', this.handlePointerUp)
+        this.sliderEl.addEventListener('pointercancel', this.handlePointerUp)
+        
+        // Pour une meilleure performance tactile
+        this.sliderEl.style.touchAction = 'none'
+    }
 
-        this.sliderEl.addEventListener('mousedown', this.handleMouseDown)
-        this.sliderEl.addEventListener('mouseup', this.handleMouseUp)
-        this.sliderEl.addEventListener('touchstart', this.handleMouseDown, { passive: true })
-        this.sliderEl.addEventListener('touchend', this.handleMouseUp, { passive: true })
+    private handlePointerDown = (event: PointerEvent): void => {
+        const target = event.target as HTMLElement
+        if (target.classList.contains('gradient-picker__slider-handler')) {
+            this.currentPointer = event.pointerId
+            target.setPointerCapture(event.pointerId)
+            target.classList.add('active')
+            this.isDragging = true
+        }
+    }
 
-        document.addEventListener('mouseup', this.handleMouseUp)
+    private handlePointerMove = (event: PointerEvent): void => {
+        if (!this.isDragging || this.currentPointer !== event.pointerId) return
+        
+        if (this.rafId) {
+            cancelAnimationFrame(this.rafId)
+        }
+
+        this.rafId = requestAnimationFrame(() => {
+            const activeHandler = this.sliderEl.querySelector('.gradient-picker__slider-handler.active')
+            if (!activeHandler || !(activeHandler instanceof HTMLElement)) return
+            
+            const newPosition = GradientUtils.getPercentage(event.clientX, this.sliderEl)
+            if (newPosition < -1 || newPosition > 100) return
+
+            const stopIndex = parseInt(activeHandler.getAttribute('data-index') || '0', 10)
+            this.updateHandlerPosition(stopIndex, newPosition)
+        })
+    }
+
+    private handlePointerUp = (event: PointerEvent): void => {
+        if (this.currentPointer !== event.pointerId) return
+        
+        this.isDragging = false
+        this.currentPointer = null
+        
+        const activeHandler = this.sliderEl.querySelector('.gradient-picker__slider-handler.active')
+        if (activeHandler) {
+            activeHandler.classList.remove('active')
+            if (activeHandler instanceof HTMLElement) {
+                activeHandler.releasePointerCapture(event.pointerId)
+            }
+        }
+    }
+
+    private updateHandlerPosition(stopIndex: number, newPosition: number): void {
+        const stopsKeys = this.stops.findIndex(stop => stop.id === stopIndex)
+        if (stopsKeys === -1) return
+
+        const newOffset = Math.ceil(newPosition)
+        this.stops[stopsKeys].offset = newOffset
+        
+        const updates = new Map()
+        updates.set(
+            `.gradient-picker__slider-handler[data-index='${stopIndex}']`,
+            {'--handler-position': `${newOffset}%`}
+        )
+        updates.set(
+            `input[data-index-position='${stopIndex}']`,
+            {value: newOffset.toString()}
+        )
+        
+        this.batchDOMUpdates(updates)
+        this.updateGradient()
+    }
+
+    // Nouvelle méthode
+    private batchDOMUpdates(updates: Map<string, Record<string, string>>): void {
+        requestAnimationFrame(() => {
+            updates.forEach((properties, selector) => {
+                const elements = this.containerPicker.querySelectorAll(selector)
+                elements.forEach(el => {
+                    Object.entries(properties).forEach(([prop, value]) => {
+                        if (prop === 'value' && el instanceof HTMLInputElement) {
+                            el.value = value
+                        } else if (el instanceof HTMLElement) {
+                            el.style.setProperty(prop, value)
+                        }
+                    })
+                })
+            })
+        })
     }
 
     private setupInputListeners(): void {
         this.typeInput?.addEventListener('input', () => {
             this.type = this.typeInput?.value as GradientType
-            this.updateElementBackground()
+            this.updateGradient()
         })
-    }
-
-    private handleMouseDown = (event: MouseEvent | TouchEvent): void => {
-        const target = event.target as HTMLElement
-        if (target.classList.contains('gradient-picker__slider-handler')) {
-            this.isDragging = true
-            target.classList.add('active')
-        }
-    }
-
-    private handleMouseUp = (event: MouseEvent | TouchEvent): void => {
-        this.isDragging = false
-        const target = event.target as HTMLElement;
-        const activeHandler = target.querySelector('.gradient-picker__slider-handler.active')
-        if (activeHandler) {
-            activeHandler.classList.remove('active')
-        }
-    }
-
-    private handleMouseMove = (event: MouseEvent | TouchEvent): void => {
-        if (!this.isDragging) return
-
-        const activeHandler = this.sliderEl.querySelector('.gradient-picker__slider-handler.active')
-        if (!activeHandler || !(activeHandler instanceof HTMLElement)) return
-    
-        const stopIndex = parseInt(activeHandler.getAttribute('data-index') || '0', 10)
-        let clientX: number
-
-        // Gestion différente selon le type d'événement
-        if (event instanceof MouseEvent) {
-            clientX = event.clientX
-        } else {
-            event.preventDefault() // Empêcher le défilement sur mobile
-            clientX = event.touches[0].clientX
-        }
-
-        const newPosition = GradientUtils.getPercentage(clientX, this.sliderEl)
-
-        if (newPosition < -1 || newPosition > 100) return
-
-        const stopsKeys = this.stops.findIndex(stop => stop.id === stopIndex)
-        if (stopsKeys !== -1) {
-            const newOffset = Math.ceil(newPosition)
-            this.stops[stopsKeys].offset = newOffset
-            
-            // Mise à jour visuelle du handler
-            activeHandler.style.setProperty('--handler-position', `${newOffset}%`)
-            
-            // Mise à jour de l'input de position
-            const positionInput = this.colorHandlersEl.querySelector(
-                `input[data-index-position='${stopIndex}']`
-            ) as HTMLInputElement
-            if (positionInput) {
-                positionInput.value = newOffset.toString()
-            }
-
-            this.updateElementBackground()
-        }
-    }
-
-    // Modification de la méthode handleSliderClick pour éviter les conflits
-    private handleSliderClick = (event: MouseEvent): void => {
-        const target = event.target as HTMLElement
-        if (target.classList.contains('gradient-picker__slider-handler')) return
-        if (this.isDragging) return
-        if (!this.sliderEl.contains(target)) return
-
-        const newPosition = GradientUtils.getPercentage(event.clientX, this.sliderEl)
-        this.addColorStop("#333333", newPosition)
     }
 
     public getGradient(): GradientObject {
@@ -314,26 +331,34 @@ export class GradientPicker {
             .map(({color, offset}) => ({ color, offset }))
     }
 
-    private updateElementBackground(): void {
-        const gradientString = GradientUtils.getGradientString(
-            this.stops,
-            "linear",
-            "right",
-            "select"
-        )
-    
-        this.sliderEl.style.backgroundImage = gradientString
-        
-        if (this.preview && this.previewEl) {
-            this.previewEl.style.backgroundImage = GradientUtils.getGradientString(
-                this.stops,
-                this.type,
-                this.direction,
-                this.directionType
-            )
+    private updateGradient(): void {
+        if (this.debounceTimeout) {
+            clearTimeout(this.debounceTimeout)
         }
-        
-        this.updateReturnValue()
+    
+        this.debounceTimeout = window.setTimeout(() => {
+            // Le slider reste toujours horizontal (de gauche à droite)
+            const sliderGradient = GradientUtils.getGradientString(
+                this.stops,
+                "linear",
+                "right",
+                "select"
+            )
+            this.sliderEl.style.backgroundImage = sliderGradient
+            
+            // La preview montre le gradient avec la direction et le type choisis
+            if (this.preview && this.previewEl) {
+                const previewGradient = GradientUtils.getGradientString(
+                    this.stops,
+                    this.type,
+                    this.direction,
+                    this.directionType
+                )
+                this.previewEl.style.backgroundImage = previewGradient
+            }
+    
+            this.updateReturnValue()
+        }, this.DEBOUNCE_DELAY)
     }
 
     private updateReturnValue(): void {

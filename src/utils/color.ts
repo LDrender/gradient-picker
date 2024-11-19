@@ -1,6 +1,8 @@
 import { HSLColor, RGBColor, ColorTypes } from '../types';
 
 export class ColorUtils {
+    private static colorCache: Map<string, string> = new Map()
+    private static ColorTypes = ColorTypes
 
     static rgbToHex({ r, g, b }: RGBColor): string {
         const toHex = (n: number) => {
@@ -50,25 +52,30 @@ export class ColorUtils {
     }
 
     static normalizeColor(color: string): string {
-        if (color.startsWith('#')) return color
+        if (this.colorCache.has(color)) {
+            return this.colorCache.get(color)!
+        }
 
-        const namedColor = ColorTypes.getNamedColorHex(color)
-        if (namedColor) return namedColor
-        
-        const rgbColor = ColorUtils.parseRGB(color)
-        if (rgbColor) return ColorUtils.rgbToHex(rgbColor)
-        
-        const hslColor = ColorUtils.parseHSL(color)
-        if (hslColor) {
-            const rgbFromHsl = ColorUtils.hslToRGB(hslColor)
-            return ColorUtils.rgbToHex(rgbFromHsl)
-        }
-        
-        // If it's a named color, convert it to hex
-        if (color.toLowerCase() in ColorTypes.namedColors) {
-            return ColorTypes.namedColors[color.toLowerCase()]
-        }
-        
-        return color
+        // Utiliser la logique de normalisation existante
+        const normalized = (() => {
+            if (color.startsWith('#')) return color
+            
+            const rgbColor = this.parseRGB(color)
+            if (rgbColor) return this.rgbToHex(rgbColor)
+            
+            const hslColor = this.parseHSL(color)
+            if (hslColor) {
+                const rgbFromHsl = this.hslToRGB(hslColor)
+                return this.rgbToHex(rgbFromHsl)
+            }
+            
+            const namedColor = this.ColorTypes.getNamedColorHex(color)
+            if (namedColor) return namedColor
+            
+            return color
+        })()
+
+        this.colorCache.set(color, normalized)
+        return normalized
     }
 }
