@@ -1,5 +1,5 @@
 export type GradientDirectionType = "select" | "percent"
-export type GradientDirection = "top" | "left" | "center" | "bottom" | "right"
+export type GradientDirection = "top" | "left" | "center" | "bottom" | "right" | "top left" | "top right" | "bottom left" | "bottom right" | "center left" | "center right" | "center top" | "center bottom"
 export type GradientType = "linear" | "radial"
 export type ReturnType = "string" | "object" | "stops-list"
 

@@ -158,10 +158,29 @@ export class GradientPicker {
                     return
                 }
             } catch (e) {
-                // Continue with normal initialization if JSON is invalid
+                if (defaultValue.includes('gradient(')) {
+                    try {
+                        const normalizedGradient = defaultValue
+                        .trim()
+                        .replace(/\s+/g, ' ')  // Normaliser les espaces
+                        .replace(/(,\s+)/g, ',')  // Normaliser les virgules
+                    
+                        const gradientObject = GradientParser.parseGradientString(normalizedGradient)
+                        if (gradientObject) {
+                            this.loadGradientFromObject(gradientObject)
+                            return
+                        }
+                    } catch (cssError) {
+                        // Si les deux méthodes échouent, continuer avec l'initialisation par défaut
+                        console.warn('Invalid gradient format:', cssError)
+                    }
+                }
             }
         }
-        this.initDefaultStops(stops)
+
+        if(this.stops.length <= 1) {
+            this.initDefaultStops(stops)
+        }
     }
 
     private initDefaultStops(stops: GradientStop[]): void {
@@ -200,8 +219,7 @@ export class GradientPicker {
 
     private loadGradientFromObject(gradient: GradientObject): void {
         this.type = gradient.type
-        this.direction = gradient.direction
-        this.stops = []
+        this.direction = this.direction = GradientParser.parseDirection(gradient.direction, this.directionType);
         
         gradient.stops.forEach(({ color, offset }) => {
             const newOffset = !GradientUtils.isFloat(offset) || offset > 1 
@@ -209,6 +227,14 @@ export class GradientPicker {
                 : offset * 100
             this.addColorStop(color, newOffset)
         })
+        
+        if (this.typeInput) {
+            this.typeInput.value = this.type;
+        }
+    
+        if (this.directionInput) {
+            this.directionInput.value = this.direction.toString();
+        }
         
         this.updateGradient()
     }
@@ -377,6 +403,8 @@ export class GradientPicker {
                     this.direction,
                     this.directionType
                 )
+                console.debug(this.previewEl.style.backgroundImage = previewGradient)
+                
                 this.previewEl.style.backgroundImage = previewGradient
             }
     

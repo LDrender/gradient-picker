@@ -2,17 +2,13 @@ import { createElement } from './utils'
 import { GradientStop } from './types'
 
 export class StopHandlerManager {
-    private stops: GradientStop[]
-    private sliderEl: HTMLElement
-    private colorHandlersEl: HTMLElement
-    private updateCallback: () => void
 
-    constructor(stops: GradientStop[], sliderEl: HTMLElement, colorHandlersEl: HTMLElement, updateCallback: () => void) {
-        this.stops = stops
-        this.sliderEl = sliderEl
-        this.colorHandlersEl = colorHandlersEl
-        this.updateCallback = updateCallback
-    }
+    constructor(
+        private stops: GradientStop[],
+        private sliderEl: HTMLElement,
+        private colorHandlersEl: HTMLElement,
+        private updateCallback: () => void
+    ) {}
 
     createHandler(stopIndex: number): void {
         const stopsKeys = this.stops.findIndex(stop => stop.id === stopIndex)

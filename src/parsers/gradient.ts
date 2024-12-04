@@ -1,4 +1,4 @@
-import { GradientDirection, GradientObject, GradientStop } from '../types'
+import { GradientDirection, GradientObject, GradientStop, GradientDirectionType } from '../types'
 import { ColorUtils } from '../utils/color'
 
 export class GradientParser {
@@ -116,5 +116,48 @@ export class GradientParser {
             direction,
             stops
         }
+    }
+
+    static parseDirection(direction: GradientDirection | number, targetType: GradientDirectionType): GradientDirection | number {
+        if (targetType === 'select' && typeof direction === 'number') {
+            return GradientParser.convertDegreeToDirection(direction);
+        }
+        if (targetType === 'percent' && typeof direction === 'string') {
+            return GradientParser.convertDirectionToDegree(direction);
+        }
+        return direction;
+    }
+
+    private static convertDegreeToDirection(degree: number): GradientDirection {
+        const normalizedDegree = ((degree % 360) + 360) % 360;
+        
+        if (normalizedDegree >= 337.5 || normalizedDegree < 22.5) return 'right';
+        if (normalizedDegree >= 22.5 && normalizedDegree < 67.5) return 'bottom right';
+        if (normalizedDegree >= 67.5 && normalizedDegree < 112.5) return 'bottom';
+        if (normalizedDegree >= 112.5 && normalizedDegree < 157.5) return 'bottom left';
+        if (normalizedDegree >= 157.5 && normalizedDegree < 202.5) return 'left';
+        if (normalizedDegree >= 202.5 && normalizedDegree < 247.5) return 'top left';
+        if (normalizedDegree >= 247.5 && normalizedDegree < 292.5) return 'top';
+        return 'top right';
+    }
+
+    private static convertDirectionToDegree(direction: GradientDirection): number {
+        const directionMap: Record<GradientDirection, number> = {
+            'right': 0,
+            'bottom right': 45,
+            'bottom': 90,
+            'bottom left': 135,
+            'left': 180,
+            'top left': 225,
+            'top': 270,
+            'top right': 315,
+            'center': 0,
+            'center left': 180,
+            'center right': 0,
+            'center top': 270,
+            'center bottom': 90
+        };
+        
+        return directionMap[direction] || 0;
     }
 }
