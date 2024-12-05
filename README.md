@@ -206,6 +206,7 @@ Supports all standard CSS color names (140+ colors). Full list available in the 
 
 The picker includes a default stylesheet that can be customized to match your application's design.
 You must use the following variables :
+(You can override the default styles by defining these variables in your own stylesheet)
 
 ```css
   .gradient-picker {
@@ -222,6 +223,8 @@ You must use the following variables :
       --gradient-picker-line-height: 36px;
       --gradient-picker-font-size: 14px;
       --gradient-picker-border-radius: 8px;
+      --gradient-picker-focus-outline: none;
+      --gradient-picker-focus-box-shadow: 0 0 0 2px rgb(0, 95, 204);
   }
 ```
 
