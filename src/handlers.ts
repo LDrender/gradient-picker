@@ -122,7 +122,9 @@ export class StopHandlerManager {
     }
 
     private onPositionChange(event: InputEvent, stopIndex: number): void {
-        const newPosition = parseInt((event.target as HTMLInputElement).value)
+        let newPosition = parseInt((event.target as HTMLInputElement).value)
+        newPosition = newPosition > 100 ? 100 : newPosition
+        newPosition = newPosition < 0 ? 0 : newPosition
         const stopsKeys = this.stops.findIndex(stop => stop.id === stopIndex)
         const stopPositionCeil = Math.ceil(newPosition)
         this.stops[stopsKeys].offset = stopPositionCeil

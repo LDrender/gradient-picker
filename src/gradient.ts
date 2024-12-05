@@ -318,6 +318,10 @@ export class GradientPicker {
             `input[data-index-position='${stopIndex}']`,
             {value: newOffset.toString()}
         )
+        updates.set(
+            `div.gradient-picker__colors-variation[data-index='${stopIndex}']`,
+            {'--color-order': newOffset.toString()}
+        )
         
         this.batchDOMUpdates(updates)
         this.updateGradient()
@@ -403,7 +407,6 @@ export class GradientPicker {
                     this.direction,
                     this.directionType
                 )
-                console.debug(this.previewEl.style.backgroundImage = previewGradient)
                 
                 this.previewEl.style.backgroundImage = previewGradient
             }
