@@ -64,11 +64,11 @@
 
             &:after {
                 content: '✕';
-                color: #555;
+                color: var(--gradient-picker-remover-color, #555);
             }
 
             &:hover:after {
-                color: rgb(229, 64, 64);
+                color: var(--gradient-picker-remover-color-hover, rgb(229, 64, 64));
             }
         }
 
@@ -135,6 +135,8 @@
             border: var(--gradient-picker-input-border, unset);
             box-shadow: var(--gradient-picker-box-shadow, inset 0 0 0.5px 1px hsla(0, 0%, 100%, 0.1), 0 0 0 1px hsla(230, 13%, 9%, 0.075), 0 0.3px 0.4px hsla(230, 13%, 9%, 0.02), 0 0.9px 1.5px hsla(230, 13%, 9%, 0.045), 0 3.5px 6px hsla(230, 13%, 9%, 0.09));
             line-height: var(--gradient-picker-line-height, 36px);
+            background-color: var(--gradient-picker-background-color, white);
+            color: var(--gradient-picker-color, black);
         }
     }
 
@@ -150,6 +152,8 @@
         height: var(--gradient-picker-input-height, 36px);
         line-height: var(--gradient-picker-line-height, 36px);
         font-size: var(--gradient-picker-font-size, 14px);
+        background-color: var(--gradient-picker-background-color, white);
+        color: var(--gradient-picker-color, black);
     }
 
     input:focus,
