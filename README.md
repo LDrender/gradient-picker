@@ -225,6 +225,7 @@ You must use the following variables :
       --gradient-picker-border-radius: 8px;
       --gradient-picker-focus-outline: none;
       --gradient-picker-focus-box-shadow: 0 0 0 2px rgb(0, 95, 204);
+      --gradient-picker-focus-border-color: rgb(0, 95, 204);
       --gradient-picker-remover-color: #555;
       --gradient-picker-remover-color-hover: rgb(229, 64, 64);
       --gradient-picker-background-color: #fff;

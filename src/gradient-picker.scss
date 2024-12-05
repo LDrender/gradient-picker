@@ -160,5 +160,6 @@
     select:focus {
         outline: var(--gradient-picker-focus-outline, none);
         box-shadow: var(--gradient-picker-focus-box-shadow, 0 0 0 2px rgb(0, 95, 204));
+        border-color: var(--gradient-picker-focus-border-color, rgb(0, 95, 204));
     }
 }
