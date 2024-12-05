@@ -20,6 +20,7 @@
 - 💨 Performance optimized with color caching
 - ✅ Built-in validation
 - 📝 Named color support (140+ CSS colors)
+- 🎨 Customizable styles
 
 ## Installation
 
@@ -200,6 +201,29 @@ The picker includes an optimized color normalization system with caching for imp
 
 Supports all standard CSS color names (140+ colors). Full list available in the source code.
 <a href="https://github.com/LDrender/gradient-picker/blob/master/colorReference.md" target="_blank">Named Colors List supporter</a>
+
+## Styling Customization
+
+The picker includes a default stylesheet that can be customized to match your application's design.
+You must use the following variables :
+
+```css
+  .gradient-picker {
+      --gradient-picker-box-shadow: inset 0 0 0.5px 1px hsla(0, 0%, 100%, 0.1), 
+                                 0 0 0 1px hsla(230, 13%, 9%, 0.075),
+                                 0 0.3px 0.4px hsla(230, 13%, 9%, 0.02),
+                                 0 0.9px 1.5px hsla(230, 13%, 9%, 0.045),
+                                 0 3.5px 6px hsla(230, 13%, 9%, 0.09);
+      --gradient-picker-preview-height: 120px;
+      --gradient-picker-input-height: 36px;
+      --gradient-picker-input-padding: 0.5rem;
+      --gradient-picker-input-border: unset;
+      --gradient-picker-handler-border: solid 3px rgb(61, 61, 61);
+      --gradient-picker-line-height: 36px;
+      --gradient-picker-font-size: 14px;
+      --gradient-picker-border-radius: 8px;
+  }
+```
 
 ## Browser Support
 
