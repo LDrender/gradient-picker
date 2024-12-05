@@ -82,7 +82,9 @@ export class StopHandlerManager {
             type: 'number',
             class: 'gradient-picker__colors-position-input',
             'data-index-position': stopIndex.toString(),
-            value: position
+            value: position,
+            min: '0',
+            max: '100'
         })
 
         input.addEventListener('input', e => this.onPositionChange(e as InputEvent, stopIndex))
@@ -123,8 +125,9 @@ export class StopHandlerManager {
 
     private onPositionChange(event: InputEvent, stopIndex: number): void {
         let newPosition = parseInt((event.target as HTMLInputElement).value)
-        newPosition = newPosition > 100 ? 100 : newPosition
-        newPosition = newPosition < 0 ? 0 : newPosition
+        if (newPosition < 0 || newPosition > 100) {
+            throw new Error('Stop offsets must be between 0 and 100')
+        }
         const stopsKeys = this.stops.findIndex(stop => stop.id === stopIndex)
         const stopPositionCeil = Math.ceil(newPosition)
         this.stops[stopsKeys].offset = stopPositionCeil

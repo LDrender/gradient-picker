@@ -4,6 +4,8 @@ export class GradientValidation {
     static validateStops(stops: GradientStop[]): void {
         // Vérifie les offsets
         if (stops.some(stop => stop.offset < 0 || stop.offset > 100)) {
+
+            // Set offset to 0 if it's less than 0 or 100 if it's greater than 100
             throw new Error('Stop offsets must be between 0 and 100')
         }
 
@@ -64,11 +66,19 @@ export class GradientUtils {
     private static getSelectDirectionValue(type: GradientType, direction: GradientDirection): string {
         if (type === 'radial') {
             const radialPositions: Record<GradientDirection, string> = {
-                "bottom": "at center bottom",
-                "center": "at center",
-                "left": "at left center",
-                "right": "at center right",
                 "top": "at center top",
+                "top right": "at right top",
+                "right": "at right center",
+                "bottom right": "at right bottom",
+                "bottom": "at center bottom",
+                "bottom left": "at left bottom",
+                "left": "at left center",
+                "top left": "at left top",
+                "center": "at center",
+                "center left": "at left center",
+                "center right": "at right center",
+                "center top": "at center top",
+                "center bottom": "at center bottom"
             }
             return radialPositions[direction]
         }
